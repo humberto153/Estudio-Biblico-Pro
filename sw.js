@@ -1,4 +1,4 @@
-const CACHE = 'estudio-biblico-pro-1-60';
+const CACHE = 'estudio-biblico-pro-1-61';
 
 const ASSETS = [
   './',
