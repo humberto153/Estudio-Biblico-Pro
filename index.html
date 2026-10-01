@@ -31,7 +31,7 @@ main{padding:18px;max-width:1500px;width:100%;margin:auto}
 @media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .right{grid-column:1/-1}.sidebar{display:none}.layout{grid-template-columns:1fr}}
 @media(max-width:720px){.header{height:auto;padding:14px;flex-wrap:wrap}.logo{min-width:auto}.search{order:3;flex-basis:100%}.toplinks{display:none}.grid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}.input{width:100%}}
 
-/* ===== Estudio Bíblico Pro 1.59 · Motor bíblico ===== */
+/* ===== Estudio Bíblico Pro 1.60 · Motor bíblico ===== */
 .search-grid{display:grid;grid-template-columns:1.335fr 1fr;gap:18px;margin-top:14px}
 .search-row{display:flex;gap:8px;margin-top:7px}
 .search-row input{flex:1;min-width:0}
@@ -209,6 +209,20 @@ main{padding:18px;max-width:1500px;width:100%;margin:auto}
 .map-route{margin-top:12px;padding:11px;border-left:3px solid #e8c46a;background:rgba(232,196,106,.05);line-height:1.5}
 @media(max-width:800px){.map-toolbar,.map-grid{grid-template-columns:1fr}.map-facts{grid-template-columns:1fr}}
 
+
+/* ===== 1.60 Biblioteca Ministerial Plus ===== */
+.minlib-toolbar{display:grid;grid-template-columns:1.4fr .7fr 1fr auto;gap:10px;margin-top:15px}
+.minlib-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.minlib-stats{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}
+.minlib-stat{padding:8px 10px;border-radius:10px;background:rgba(232,196,106,.08);font-size:.8rem}
+.minlib-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.minlib-card{padding:15px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:rgba(255,255,255,.025)}
+.minlib-card h3{margin:0 0 7px;color:#e8c46a}
+.minlib-card .meta{font-size:.8rem;color:#aebbd0}
+.minlib-card .excerpt{margin-top:9px;line-height:1.42;max-height:120px;overflow:hidden}
+.minlib-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.minlib-fav{color:#e8c46a}
+@media(max-width:850px){.minlib-toolbar{grid-template-columns:1fr}.minlib-grid{grid-template-columns:1fr}}
 </style>
 
 <style id="EBP155_iPad">
@@ -314,7 +328,7 @@ textarea{min-height:110px}
   <button id="ebp155Menu" class="btn" aria-label="Abrir menú">☰</button>
   <div>
     <div id="ebp155Title">📖 Estudio Bíblico Pro</div>
-    <div id="ebp155Sub">Versión 1.59 · Biblioteca Ministerial</div>
+    <div id="ebp155Sub">Versión 1.60 · Biblioteca Ministerial</div>
   </div>
 </div>
 <div id="ebp155Overlay"></div>
@@ -376,7 +390,7 @@ textarea{min-height:110px}
       <h2>🧠 Centro de Estudio Unificado</h2>
       <p class="muted">Un solo pasaje alimenta todo el flujo de estudio, enseñanza y predicación.</p>
     </div>
-    <span class="badge">1.59</span>
+    <span class="badge">1.60</span>
   </div>
 
   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
@@ -602,7 +616,7 @@ textarea{min-height:110px}
   window.uwExport=function(){
     const d=ensure();
     const text=[
-      'ESTUDIO BÍBLICO PRO 1.59',
+      'ESTUDIO BÍBLICO PRO 1.60',
       'Título: '+d.title,'Referencia: '+d.ref,'Tipo: '+$('uwType').value,
       'Idea central: '+(d.idea||''),'',
       'OBSERVACIÓN',d.observation,'',
@@ -1098,6 +1112,35 @@ textarea{min-height:110px}
   <div id="researchLibraryList" class="library-grid"></div>
 </section>
 
+
+<section class="panel" id="ministerialLibrary160Panel" style="margin-top:18px;">
+  <div class="panel-head">
+    <div>
+      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.60</div>
+      <h2>Biblioteca Ministerial Plus</h2>
+      <p class="muted">Guarda una copia local del estudio completo: referencia, notas, exégesis, sermón, manual del maestro y otros módulos generados.</p>
+    </div>
+    <span class="badge">Local · iPad</span>
+  </div>
+  <div class="minlib-toolbar">
+    <input id="minlibTitle" class="input" value="De lejos a la presencia de Dios" placeholder="Título del estudio">
+    <select id="minlibType" class="select">
+      <option>Estudio bíblico</option><option>Exégesis</option><option>Sermón</option><option>Clase</option><option>Discipulado</option><option>Seminario</option><option>Investigación</option>
+    </select>
+    <input id="minlibTags" class="input" placeholder="Etiquetas: gracia, Efesios, iglesia">
+    <button class="btn primary" onclick="minlibSaveCurrent()">💾 Guardar completo</button>
+  </div>
+  <div class="minlib-tools">
+    <label class="btn secondary" style="cursor:pointer">📥 Importar biblioteca<input id="minlibImport" type="file" accept="application/json" style="display:none" onchange="minlibImportFile(this.files[0])"></label>
+    <button class="btn secondary" onclick="minlibExportAll()">📤 Respaldar biblioteca</button>
+    <button class="btn secondary" onclick="minlibToggleFavorites()">⭐ Favoritos</button>
+    <button class="btn secondary" onclick="minlibClearSearch()">Limpiar</button>
+    <input id="minlibSearch" class="input" style="flex:1;min-width:220px" placeholder="Buscar por título, referencia, etiquetas o contenido..." oninput="minlibRender()">
+  </div>
+  <div id="minlibStats" class="minlib-stats"></div>
+  <div id="minlibList" class="minlib-grid"></div>
+  <div id="minlibStatus" class="status"></div>
+</section>
 
 <section class="panel" id="sermonBuilderPanel" style="margin-top:18px;">
   <div class="panel-head">
@@ -7224,7 +7267,75 @@ function deleteLib53(id){
 document.addEventListener('DOMContentLoaded',renderLib53);
 </script>
 
-<div id="EBP155">Estudio Bíblico Pro 1.59 · iPad</div></body></html>');
+<div id="EBP155">Estudio Bíblico Pro 1.60 · iPad</div>\n<script>
+/* ===== 1.60 Biblioteca Ministerial Plus ===== */
+const MINLIB_KEY="ebp_ministerial_library_v160";
+let minlibFavoritesOnly=false;
+function minlibGet(){try{return JSON.parse(localStorage.getItem(MINLIB_KEY)||"[]")}catch(e){return[]}}
+function minlibSet(items){localStorage.setItem(MINLIB_KEY,JSON.stringify(items.slice(0,300)))}
+function minlibText(id){const el=document.getElementById(id);return el?el.innerText.trim():""}
+function minlibCurrent(){
+ const ref=(document.getElementById("passageRef")?.value||document.getElementById("exegesisRef")?.value||"Efesios 2:11-22").trim();
+ const title=(document.getElementById("minlibTitle")?.value||"Estudio sin título").trim();
+ const type=document.getElementById("minlibType")?.value||"Estudio bíblico";
+ const tags=(document.getElementById("minlibTags")?.value||"").split(",").map(x=>x.trim()).filter(Boolean);
+ const notes=[...document.querySelectorAll(".notearea")].map(x=>x.value||"").filter(Boolean).join("\
+\
+");
+ const sections={
+   centro:minlibText("unifiedWorkspace"),
+   exegesis:minlibText("exegesisEnginePanel"),
+   sermon:minlibText("sermonBuilderPanel"),
+   teacher:minlibText("teacherManualPanel"),
+   notes:notes,
+   textual:minlibText("textualAnalysisPanel"),
+   theology:minlibText("systematicTheologyPanel"),
+   pastoral:minlibText("pastoralTheologyPanel")
+ };
+ return {id:"min-"+Date.now(),title,type,reference:ref,tags,sections,updated:new Date().toISOString(),favorite:false};
+}
+function minlibSaveCurrent(){
+ const item=minlibCurrent(), all=minlibGet();
+ const idx=all.findIndex(x=>x.title===item.title&&x.reference===item.reference);
+ if(idx>=0){item.id=all[idx].id;item.favorite=all[idx].favorite;all[idx]=item}else all.unshift(item);
+ minlibSet(all);minlibRender();
+ const st=document.getElementById("minlibStatus");if(st)st.textContent="✓ Estudio completo guardado localmente en este iPad: "+item.title;
+}
+function minlibExcerpt(x){
+ const parts=Object.values(x.sections||{}).filter(Boolean);
+ return (parts.join(" ").replace(/\\s+/g," ").slice(0,520)||"Sin contenido adicional guardado.");
+}
+function minlibRender(){
+ const list=document.getElementById("minlibList"), stats=document.getElementById("minlibStats");if(!list||!stats)return;
+ const q=(document.getElementById("minlibSearch")?.value||"").toLowerCase().trim();
+ const all=minlibGet(), filtered=all.filter(x=>{
+   const hay=[x.title,x.type,x.reference,(x.tags||[]).join(" "),minlibExcerpt(x)].join(" ").toLowerCase();
+   return (!q||hay.includes(q))&&(!minlibFavoritesOnly||x.favorite);
+ });
+ stats.innerHTML=`<span class="minlib-stat">Total: ${all.length}</span><span class="minlib-stat">Mostrando: ${filtered.length}</span><span class="minlib-stat">⭐ Favoritos: ${all.filter(x=>x.favorite).length}</span><span class="minlib-stat">Guardado: este navegador/iPad</span>`;
+ if(!filtered.length){list.innerHTML='<div class="minlib-card"><strong>No hay estudios guardados que coincidan.</strong><div class="meta" style="margin-top:6px">Guarda el estudio actual con “💾 Guardar completo”.</div></div>';return}
+ list.innerHTML=filtered.map(x=>`<article class="minlib-card"><h3>${x.favorite?'⭐ ':''}${escapeHtml(x.title)}</h3><div class="meta">${escapeHtml(x.reference)} · ${escapeHtml(x.type)} · ${new Date(x.updated).toLocaleString('es-PA')}</div><div class="minlib-tags">${(x.tags||[]).map(t=>`<span class="library-tag">${escapeHtml(t)}</span>`).join(' ')}</div><div class="excerpt">${escapeHtml(minlibExcerpt(x))}</div><div class="minlib-actions"><button class="btn small" onclick="minlibOpen('${x.id}')">Abrir</button><button class="btn small" onclick="minlibFavorite('${x.id}')">${x.favorite?'☆ Quitar favorito':'⭐ Favorito'}</button><button class="btn small" onclick="minlibExportOne('${x.id}')">📤 JSON</button><button class="btn small" onclick="minlibDelete('${x.id}')">Eliminar</button></div></article>`).join("");
+}
+function minlibOpen(id){
+ const x=minlibGet().find(y=>y.id===id);if(!x)return;
+ const ref=document.getElementById("exegesisRef");if(ref){ref.value=x.reference;try{runExegesisEngine()}catch(e){}}
+ const title=document.getElementById("minlibTitle");if(title)title.value=x.title;
+ const type=document.getElementById("minlibType");if(type)type.value=x.type;
+ const tags=document.getElementById("minlibTags");if(tags)tags.value=(x.tags||[]).join(", ");
+ const note=document.querySelector(".notearea");if(note&&x.sections?.notes)note.value=x.sections.notes;
+ document.getElementById("exegesisEnginePanel")?.scrollIntoView({behavior:"smooth",block:"start"});
+ document.getElementById("minlibStatus").textContent="✓ Estudio abierto: "+x.title+". Los módulos guardados permanecen en la biblioteca como respaldo.";
+}
+function minlibFavorite(id){const all=minlibGet();const x=all.find(y=>y.id===id);if(!x)return;x.favorite=!x.favorite;minlibSet(all);minlibRender()}
+function minlibDelete(id){const x=minlibGet().find(y=>y.id===id);if(!x)return;if(confirm('¿Eliminar “'+x.title+'” de la Biblioteca Ministerial Plus?')){minlibSet(minlibGet().filter(y=>y.id!==id));minlibRender();}}
+function minlibExportOne(id){const x=minlibGet().find(y=>y.id===id);if(!x)return;minlibDownload([x],`estudio-biblico-${Date.now()}.json`)}
+function minlibExportAll(){const all=minlibGet();if(!all.length){alert("La biblioteca está vacía.");return}minlibDownload(all,`biblioteca-ministerial-1.60-${new Date().toISOString().slice(0,10)}.json`)}
+function minlibDownload(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function minlibImportFile(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const incoming=JSON.parse(reader.result);const arr=Array.isArray(incoming)?incoming:[incoming];const all=minlibGet();const ids=new Set(all.map(x=>x.id));arr.forEach(x=>{if(x&&x.title){if(!ids.has(x.id))all.push(x);else{const i=all.findIndex(y=>y.id===x.id);all[i]=x}}});minlibSet(all);minlibRender();document.getElementById("minlibStatus").textContent="✓ Biblioteca importada correctamente."}catch(e){alert("No se pudo importar el archivo JSON.")}};reader.readAsText(file)}
+function minlibToggleFavorites(){minlibFavoritesOnly=!minlibFavoritesOnly;minlibRender();document.getElementById("minlibStatus").textContent=minlibFavoritesOnly?"Mostrando solo favoritos.":"Mostrando toda la biblioteca."}
+function minlibClearSearch(){const i=document.getElementById("minlibSearch");if(i)i.value="";minlibFavoritesOnly=false;minlibRender()}
+minlibRender();
+</script>\n</body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
 }
 document.addEventListener('DOMContentLoaded',renderSlides);
@@ -11298,7 +11409,7 @@ document.addEventListener('DOMContentLoaded',renderLib53);
 <section class="panel" id="library159" style="margin-top:18px;">
   <div class="panel-head">
     <div>
-      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.59</div>
+      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.60</div>
       <h2>📚 Biblioteca Ministerial</h2>
       <p class="muted">Unifica estudios, sermones, clases, discipulado e investigación en una biblioteca local con búsqueda, favoritos y copias de seguridad.</p>
     </div>
@@ -11327,6 +11438,16 @@ document.addEventListener('DOMContentLoaded',renderLib53);
         <button class="btn" onclick="backupLibrary159()">⬇️ Copia de seguridad</button>
         <button class="btn" onclick="document.getElementById('lib159Import').click()">⬆️ Restaurar biblioteca</button>
         <input id="lib159Import" type="file" accept=".json,application/json" style="display:none" onchange="importLibrary159(event)">
+      </div>
+      <div class="lib159-full" style="margin-top:12px;border-top:1px solid #d9e1e8;padding-top:12px">
+        <div class="callout"><b>🛡️ Respaldo completo 1.60:</b> guarda una copia de los datos locales de toda la aplicación en un único archivo JSON. Esto protege estudios, notas, biblioteca, exégesis y demás información almacenada en este navegador.</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn primary" onclick="backupApp160()">💾 Respaldar toda la aplicación</button>
+          <button class="btn" onclick="document.getElementById('app160Import').click()">♻️ Restaurar respaldo completo</button>
+          <input id="app160Import" type="file" accept=".json,application/json" style="display:none" onchange="restoreApp160(event)">
+        </div>
+        <div id="backup160Status" class="status" style="margin-top:8px"></div>
+      </div>
       </div>
     </div>
   </details>
@@ -11389,15 +11510,73 @@ function editLibrary159(id){
 function deleteLibrary159(id){const data=getLibrary159(),x=data.find(a=>a.id===id);if(!x)return;if(!confirm('¿Eliminar "'+x.title+'"?'))return;setLibrary159(data.filter(a=>a.id!==id));renderLibrary159()}
 function exportLibrary159(id){
   const x=getLibrary159().find(a=>a.id===id);if(!x)return;
-  const text="ESTUDIO BÍBLICO PRO 1.59\\n\\nTítulo: "+x.title+"\\nTipo: "+x.type+"\\nReferencia: "+x.ref+"\\nEtiquetas: "+(x.tags||[]).join(", ")+"\\n\\nCONTENIDO\\n"+(x.summary||"");
+  const text="ESTUDIO BÍBLICO PRO 1.60\\n\\nTítulo: "+x.title+"\\nTipo: "+x.type+"\\nReferencia: "+x.ref+"\\nEtiquetas: "+(x.tags||[]).join(", ")+"\\n\\nCONTENIDO\\n"+(x.summary||"");
   const blob=new Blob([text],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(x.title||"recurso").replace(/[\\\\/:*?"<>|]/g,"-")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function backupLibrary159(){
-  const blob=new Blob([JSON.stringify(getLibrary159(),null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Biblioteca_1.59.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const blob=new Blob([JSON.stringify(getLibrary159(),null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Biblioteca_1.60.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function importLibrary159(event){
   const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();
   reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!Array.isArray(parsed))throw new Error("Formato");setLibrary159(parsed.map(normalize159));renderLibrary159();alert("✓ Biblioteca restaurada correctamente.")}catch(e){alert("No se pudo importar el archivo. Debe ser una copia JSON de la Biblioteca Ministerial.")}event.target.value=""};reader.readAsText(file);
+}
+
+/* RESPALDO COMPLETO — Estudio Bíblico Pro 1.60 */
+const APP_BACKUP_VERSION_160="1.60";
+function collectAppBackup160(){
+  const storage={};
+  for(let i=0;i<localStorage.length;i++){
+    const key=localStorage.key(i);
+    if(key!==null) storage[key]=localStorage.getItem(key);
+  }
+  return {
+    schema:"estudio-biblico-pro-backup",
+    schemaVersion:1,
+    appVersion:APP_BACKUP_VERSION_160,
+    createdAt:new Date().toISOString(),
+    origin:location.origin,
+    itemCount:Object.keys(storage).length,
+    localStorage:storage
+  };
+}
+function backupApp160(){
+  try{
+    const data=collectAppBackup160();
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    const stamp=new Date().toISOString().replace(/[:.]/g,"-").slice(0,19);
+    a.download="Estudio_Biblico_Pro_Respaldo_Completo_1.60_"+stamp+".json";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    const st=document.getElementById("backup160Status");
+    if(st)st.textContent="✓ Respaldo completo creado: "+data.itemCount+" elementos de almacenamiento local.";
+  }catch(e){
+    const st=document.getElementById("backup160Status");
+    if(st)st.textContent="✕ No se pudo crear el respaldo: "+e.message;
+  }
+}
+function restoreApp160(event){
+  const file=event.target.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      if(!data||data.schema!=="estudio-biblico-pro-backup"||data.schemaVersion!==1||!data.localStorage||typeof data.localStorage!=="object") throw new Error("El archivo no es un respaldo válido de Estudio Bíblico Pro.");
+      const keys=Object.keys(data.localStorage);
+      const date=data.createdAt?new Date(data.createdAt).toLocaleString("es-PA"):"fecha desconocida";
+      const ok=confirm("Vas a restaurar un respaldo de Estudio Bíblico Pro creado el "+date+".\n\nEsto reemplazará los datos locales actuales de esta aplicación por los del respaldo ("+keys.length+" elementos).\n\n¿Deseas continuar?");
+      if(!ok){event.target.value="";return;}
+      localStorage.clear();
+      keys.forEach(k=>localStorage.setItem(k,String(data.localStorage[k])));
+      alert("✓ Respaldo restaurado correctamente. La aplicación se recargará.");
+      location.reload();
+    }catch(e){
+      alert("No se pudo restaurar el respaldo.\n\n"+e.message);
+    }
+    event.target.value="";
+  };
+  reader.readAsText(file);
 }
 document.addEventListener("DOMContentLoaded",()=>setTimeout(renderLibrary159,220));
 </script>
