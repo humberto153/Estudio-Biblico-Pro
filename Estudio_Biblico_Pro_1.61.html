@@ -31,7 +31,7 @@ main{padding:18px;max-width:1500px;width:100%;margin:auto}
 @media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .right{grid-column:1/-1}.sidebar{display:none}.layout{grid-template-columns:1fr}}
 @media(max-width:720px){.header{height:auto;padding:14px;flex-wrap:wrap}.logo{min-width:auto}.search{order:3;flex-basis:100%}.toplinks{display:none}.grid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}.input{width:100%}}
 
-/* ===== Estudio Bíblico Pro 1.61 · Motor bíblico ===== */
+/* ===== Estudio Bíblico Pro 1.60 · Motor bíblico ===== */
 .search-grid{display:grid;grid-template-columns:1.335fr 1fr;gap:18px;margin-top:14px}
 .search-row{display:flex;gap:8px;margin-top:7px}
 .search-row input{flex:1;min-width:0}
@@ -209,20 +209,6 @@ main{padding:18px;max-width:1500px;width:100%;margin:auto}
 .map-route{margin-top:12px;padding:11px;border-left:3px solid #e8c46a;background:rgba(232,196,106,.05);line-height:1.5}
 @media(max-width:800px){.map-toolbar,.map-grid{grid-template-columns:1fr}.map-facts{grid-template-columns:1fr}}
 
-
-/* ===== 1.61 Biblioteca Ministerial Plus ===== */
-.minlib-toolbar{display:grid;grid-template-columns:1.4fr .7fr 1fr auto;gap:10px;margin-top:15px}
-.minlib-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.minlib-stats{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}
-.minlib-stat{padding:8px 10px;border-radius:10px;background:rgba(232,196,106,.08);font-size:.8rem}
-.minlib-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.minlib-card{padding:15px;border:1px solid rgba(255,255,255,.09);border-radius:15px;background:rgba(255,255,255,.025)}
-.minlib-card h3{margin:0 0 7px;color:#e8c46a}
-.minlib-card .meta{font-size:.8rem;color:#aebbd0}
-.minlib-card .excerpt{margin-top:9px;line-height:1.42;max-height:120px;overflow:hidden}
-.minlib-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
-.minlib-fav{color:#e8c46a}
-@media(max-width:850px){.minlib-toolbar{grid-template-columns:1fr}.minlib-grid{grid-template-columns:1fr}}
 </style>
 
 <style id="EBP155_iPad">
@@ -342,6 +328,7 @@ textarea{min-height:110px}
     <button data-target="unifiedWorkspace">🎓 Seminario</button>
     <button data-target="unifiedWorkspace">💾 Guardar estudio</button>
     <button data-target="library159">📚 Biblioteca ministerial</button>
+    <button data-target="discipleship161">🧭 Discipulado 16 lecciones</button>
   </div>
   <hr style="margin:18px 0">
   <div class="notice">
@@ -390,7 +377,7 @@ textarea{min-height:110px}
       <h2>🧠 Centro de Estudio Unificado</h2>
       <p class="muted">Un solo pasaje alimenta todo el flujo de estudio, enseñanza y predicación.</p>
     </div>
-    <span class="badge">1.61</span>
+    <span class="badge">1.60</span>
   </div>
 
   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
@@ -645,7 +632,7 @@ textarea{min-height:110px}
 <header class="header">
   <div class="logo"><div class="logo-icon">📖</div><div><div class="brand">ESTUDIO BÍBLICO <span>PRO 1.1</span></div><div class="tag">EXPLORA · ESTUDIA · PROFUNDIZA · APLICA</div></div></div>
   <div class="search">🔍 &nbsp; Buscar pasaje, palabra, tema...</div>
-  <div class="toplinks"><div onclick="openContinuityPanel()" style="cursor:pointer">🧭<br>Continuidad</div><div>📚<br>Biblioteca</div><div>📝<br>Mis notas</div><div>⭐<br>Favoritos</div><div>⚙️<br>Ajustes</div></div>
+  <div class="toplinks"><div>📚<br>Biblioteca</div><div>📝<br>Mis notas</div><div>⭐<br>Favoritos</div><div>⚙️<br>Ajustes</div></div>
 </header>
 <div class="layout">
 <aside class="sidebar">
@@ -1112,35 +1099,6 @@ textarea{min-height:110px}
   <div id="researchLibraryList" class="library-grid"></div>
 </section>
 
-
-<section class="panel" id="ministerialLibrary160Panel" style="margin-top:18px;">
-  <div class="panel-head">
-    <div>
-      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.61</div>
-      <h2>Biblioteca Ministerial Plus</h2>
-      <p class="muted">Guarda una copia local del estudio completo: referencia, notas, exégesis, sermón, manual del maestro y otros módulos generados.</p>
-    </div>
-    <span class="badge">Local · iPad</span>
-  </div>
-  <div class="minlib-toolbar">
-    <input id="minlibTitle" class="input" value="De lejos a la presencia de Dios" placeholder="Título del estudio">
-    <select id="minlibType" class="select">
-      <option>Estudio bíblico</option><option>Exégesis</option><option>Sermón</option><option>Clase</option><option>Discipulado</option><option>Seminario</option><option>Investigación</option>
-    </select>
-    <input id="minlibTags" class="input" placeholder="Etiquetas: gracia, Efesios, iglesia">
-    <button class="btn primary" onclick="minlibSaveCurrent()">💾 Guardar completo</button>
-  </div>
-  <div class="minlib-tools">
-    <label class="btn secondary" style="cursor:pointer">📥 Importar biblioteca<input id="minlibImport" type="file" accept="application/json" style="display:none" onchange="minlibImportFile(this.files[0])"></label>
-    <button class="btn secondary" onclick="minlibExportAll()">📤 Respaldar biblioteca</button>
-    <button class="btn secondary" onclick="minlibToggleFavorites()">⭐ Favoritos</button>
-    <button class="btn secondary" onclick="minlibClearSearch()">Limpiar</button>
-    <input id="minlibSearch" class="input" style="flex:1;min-width:220px" placeholder="Buscar por título, referencia, etiquetas o contenido..." oninput="minlibRender()">
-  </div>
-  <div id="minlibStats" class="minlib-stats"></div>
-  <div id="minlibList" class="minlib-grid"></div>
-  <div id="minlibStatus" class="status"></div>
-</section>
 
 <section class="panel" id="sermonBuilderPanel" style="margin-top:18px;">
   <div class="panel-head">
@@ -7267,201 +7225,7 @@ function deleteLib53(id){
 document.addEventListener('DOMContentLoaded',renderLib53);
 </script>
 
-<div id="EBP155">Estudio Bíblico Pro 1.61 · iPad</div>\n<script>
-/* ===== 1.61 Biblioteca Ministerial Plus ===== */
-const MINLIB_KEY="ebp_ministerial_library_v160";
-let minlibFavoritesOnly=false;
-function minlibGet(){try{return JSON.parse(localStorage.getItem(MINLIB_KEY)||"[]")}catch(e){return[]}}
-function minlibSet(items){localStorage.setItem(MINLIB_KEY,JSON.stringify(items.slice(0,300)))}
-function minlibText(id){const el=document.getElementById(id);return el?el.innerText.trim():""}
-function minlibCurrent(){
- const ref=(document.getElementById("passageRef")?.value||document.getElementById("exegesisRef")?.value||"Efesios 2:11-22").trim();
- const title=(document.getElementById("minlibTitle")?.value||"Estudio sin título").trim();
- const type=document.getElementById("minlibType")?.value||"Estudio bíblico";
- const tags=(document.getElementById("minlibTags")?.value||"").split(",").map(x=>x.trim()).filter(Boolean);
- const notes=[...document.querySelectorAll(".notearea")].map(x=>x.value||"").filter(Boolean).join("\
-\
-");
- const sections={
-   centro:minlibText("unifiedWorkspace"),
-   exegesis:minlibText("exegesisEnginePanel"),
-   sermon:minlibText("sermonBuilderPanel"),
-   teacher:minlibText("teacherManualPanel"),
-   notes:notes,
-   textual:minlibText("textualAnalysisPanel"),
-   theology:minlibText("systematicTheologyPanel"),
-   pastoral:minlibText("pastoralTheologyPanel")
- };
- return {id:"min-"+Date.now(),title,type,reference:ref,tags,sections,updated:new Date().toISOString(),favorite:false};
-}
-function minlibSaveCurrent(){
- const item=minlibCurrent(), all=minlibGet();
- const idx=all.findIndex(x=>x.title===item.title&&x.reference===item.reference);
- if(idx>=0){item.id=all[idx].id;item.favorite=all[idx].favorite;all[idx]=item}else all.unshift(item);
- minlibSet(all);minlibRender();
- const st=document.getElementById("minlibStatus");if(st)st.textContent="✓ Estudio completo guardado localmente en este iPad: "+item.title;
-}
-function minlibExcerpt(x){
- const parts=Object.values(x.sections||{}).filter(Boolean);
- return (parts.join(" ").replace(/\\s+/g," ").slice(0,520)||"Sin contenido adicional guardado.");
-}
-function minlibRender(){
- const list=document.getElementById("minlibList"), stats=document.getElementById("minlibStats");if(!list||!stats)return;
- const q=(document.getElementById("minlibSearch")?.value||"").toLowerCase().trim();
- const all=minlibGet(), filtered=all.filter(x=>{
-   const hay=[x.title,x.type,x.reference,(x.tags||[]).join(" "),minlibExcerpt(x)].join(" ").toLowerCase();
-   return (!q||hay.includes(q))&&(!minlibFavoritesOnly||x.favorite);
- });
- stats.innerHTML=`<span class="minlib-stat">Total: ${all.length}</span><span class="minlib-stat">Mostrando: ${filtered.length}</span><span class="minlib-stat">⭐ Favoritos: ${all.filter(x=>x.favorite).length}</span><span class="minlib-stat">Guardado: este navegador/iPad</span>`;
- if(!filtered.length){list.innerHTML='<div class="minlib-card"><strong>No hay estudios guardados que coincidan.</strong><div class="meta" style="margin-top:6px">Guarda el estudio actual con “💾 Guardar completo”.</div></div>';return}
- list.innerHTML=filtered.map(x=>`<article class="minlib-card"><h3>${x.favorite?'⭐ ':''}${escapeHtml(x.title)}</h3><div class="meta">${escapeHtml(x.reference)} · ${escapeHtml(x.type)} · ${new Date(x.updated).toLocaleString('es-PA')}</div><div class="minlib-tags">${(x.tags||[]).map(t=>`<span class="library-tag">${escapeHtml(t)}</span>`).join(' ')}</div><div class="excerpt">${escapeHtml(minlibExcerpt(x))}</div><div class="minlib-actions"><button class="btn small" onclick="minlibOpen('${x.id}')">Abrir</button><button class="btn small" onclick="minlibFavorite('${x.id}')">${x.favorite?'☆ Quitar favorito':'⭐ Favorito'}</button><button class="btn small" onclick="minlibExportOne('${x.id}')">📤 JSON</button><button class="btn small" onclick="minlibDelete('${x.id}')">Eliminar</button></div></article>`).join("");
-}
-function minlibOpen(id){
- const x=minlibGet().find(y=>y.id===id);if(!x)return;
- const ref=document.getElementById("exegesisRef");if(ref){ref.value=x.reference;try{runExegesisEngine()}catch(e){}}
- const title=document.getElementById("minlibTitle");if(title)title.value=x.title;
- const type=document.getElementById("minlibType");if(type)type.value=x.type;
- const tags=document.getElementById("minlibTags");if(tags)tags.value=(x.tags||[]).join(", ");
- const note=document.querySelector(".notearea");if(note&&x.sections?.notes)note.value=x.sections.notes;
- document.getElementById("exegesisEnginePanel")?.scrollIntoView({behavior:"smooth",block:"start"});
- document.getElementById("minlibStatus").textContent="✓ Estudio abierto: "+x.title+". Los módulos guardados permanecen en la biblioteca como respaldo.";
-}
-function minlibFavorite(id){const all=minlibGet();const x=all.find(y=>y.id===id);if(!x)return;x.favorite=!x.favorite;minlibSet(all);minlibRender()}
-function minlibDelete(id){const x=minlibGet().find(y=>y.id===id);if(!x)return;if(confirm('¿Eliminar “'+x.title+'” de la Biblioteca Ministerial Plus?')){minlibSet(minlibGet().filter(y=>y.id!==id));minlibRender();}}
-function minlibExportOne(id){const x=minlibGet().find(y=>y.id===id);if(!x)return;minlibDownload([x],`estudio-biblico-${Date.now()}.json`)}
-function minlibExportAll(){const all=minlibGet();if(!all.length){alert("La biblioteca está vacía.");return}minlibDownload(all,`biblioteca-ministerial-1.61-${new Date().toISOString().slice(0,10)}.json`)}
-function minlibDownload(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function minlibImportFile(file){if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const incoming=JSON.parse(reader.result);const arr=Array.isArray(incoming)?incoming:[incoming];const all=minlibGet();const ids=new Set(all.map(x=>x.id));arr.forEach(x=>{if(x&&x.title){if(!ids.has(x.id))all.push(x);else{const i=all.findIndex(y=>y.id===x.id);all[i]=x}}});minlibSet(all);minlibRender();document.getElementById("minlibStatus").textContent="✓ Biblioteca importada correctamente."}catch(e){alert("No se pudo importar el archivo JSON.")}};reader.readAsText(file)}
-function minlibToggleFavorites(){minlibFavoritesOnly=!minlibFavoritesOnly;minlibRender();document.getElementById("minlibStatus").textContent=minlibFavoritesOnly?"Mostrando solo favoritos.":"Mostrando toda la biblioteca."}
-function minlibClearSearch(){const i=document.getElementById("minlibSearch");if(i)i.value="";minlibFavoritesOnly=false;minlibRender()}
-minlibRender();
-</script>\n
-<style>
-/* ===== Estudio Bíblico Pro 1.61 · Centro de Continuidad ===== */
-.continuity-overlay{position:fixed;inset:0;background:rgba(4,18,30,.58);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
-.continuity-modal{width:min(920px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;box-shadow:0 20px 70px #0005;border:1px solid #d9e1e8}
-.continuity-head{padding:18px 20px;background:linear-gradient(110deg,#06253d,#0b5fa5);color:#fff;display:flex;justify-content:space-between;gap:15px;align-items:center}
-.continuity-head h2{margin:0;font-size:21px}.continuity-head small{opacity:.82}
-.continuity-close{border:0;background:#ffffff22;color:#fff;border-radius:10px;padding:9px 12px;font-size:20px;cursor:pointer}
-.continuity-body{padding:18px}.continuity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.continuity-card{border:1px solid #d9e1e8;border-radius:14px;padding:15px;background:#f8fbfd}
-.continuity-card h3{margin:0 0 7px;font-size:15px;color:#0b5fa5}.continuity-value{font-weight:800;font-size:18px;line-height:1.25}
-.continuity-muted{color:#647383;font-size:12px;line-height:1.4}.continuity-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
-.continuity-btn{border:1px solid #0b5fa5;background:#0b5fa5;color:#fff;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer}
-.continuity-btn.secondary{background:#fff;color:#0b5fa5}
-.continuity-log{margin-top:16px;border-top:1px solid #e7edf2;padding-top:14px}
-.continuity-log-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #edf0f3;font-size:13px}
-@media(max-width:720px){.continuity-grid{grid-template-columns:1fr}.continuity-modal{max-height:94vh}}
-</style>
-
-<div id="continuityOverlay" class="continuity-overlay" onclick="if(event.target===this)closeContinuityPanel()">
-  <div class="continuity-modal" role="dialog" aria-modal="true" aria-labelledby="continuityTitle">
-    <div class="continuity-head">
-      <div><h2 id="continuityTitle">🧭 Centro de Continuidad Ministerial</h2><small>Estudio Bíblico Pro 1.61 · tu trabajo queda organizado en este iPad</small></div>
-      <button class="continuity-close" onclick="closeContinuityPanel()">×</button>
-    </div>
-    <div class="continuity-body">
-      <div class="continuity-grid">
-        <div class="continuity-card">
-          <h3>📖 Pasaje activo</h3>
-          <div id="continuityReference" class="continuity-value">—</div>
-          <div id="continuityTopic" class="continuity-muted" style="margin-top:5px">—</div>
-        </div>
-        <div class="continuity-card">
-          <h3>📚 Biblioteca local</h3>
-          <div id="continuityLibraryCount" class="continuity-value">0 recursos</div>
-          <div class="continuity-muted">Estudios, sermones, clases, cursos y notas guardados en este navegador.</div>
-        </div>
-        <div class="continuity-card">
-          <h3>💾 Respaldo</h3>
-          <div class="continuity-value">Protección local</div>
-          <div class="continuity-muted">Puedes crear una copia JSON del trabajo almacenado en este iPad.</div>
-        </div>
-      </div>
-      <div class="continuity-actions">
-        <button class="continuity-btn" onclick="continuityGoToLibrary()">📚 Abrir Biblioteca</button>
-        <button class="continuity-btn secondary" onclick="continuityRefresh()">↻ Actualizar estado</button>
-        <button class="continuity-btn secondary" onclick="continuityCopySummary()">📋 Copiar resumen</button>
-        <button class="continuity-btn secondary" onclick="closeContinuityPanel()">Cerrar</button>
-      </div>
-      <div class="continuity-log">
-        <strong>Últimos recursos locales</strong>
-        <div id="continuityRecent"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-(function(){
-  function readAny(keys, fallback){
-    for(const k of keys){
-      try{
-        const raw=localStorage.getItem(k);
-        if(raw!==null){
-          const v=JSON.parse(raw);
-          if(v!==null) return v;
-        }
-      }catch(e){}
-    }
-    return fallback;
-  }
-  function getCurrentRef(){
-    const el=document.getElementById('activeReference') || document.getElementById('selectedRef') || document.getElementById('ref');
-    return el ? (el.value || el.textContent || '').trim() : '—';
-  }
-  function getCurrentTopic(){
-    const el=document.getElementById('activeTopic');
-    return el ? el.textContent.replace(/^\\s*[·•]\\s*/,'').trim() : '';
-  }
-  function getLibrary(){
-    const candidates=[
-      'EBP_LIBRARY_153','ebp_library_v120','EBP_UNIFIED_STUDIES_157','EBP_LIBRARY_159'
-    ];
-    const v=readAny(candidates,[]);
-    return Array.isArray(v)?v:[];
-  }
-  window.openContinuityPanel=function(){
-    document.getElementById('continuityOverlay').style.display='flex';
-    continuityRefresh();
-  };
-  window.closeContinuityPanel=function(){
-    document.getElementById('continuityOverlay').style.display='none';
-  };
-  window.continuityRefresh=function(){
-    const ref=getCurrentRef();
-    const topic=getCurrentTopic();
-    document.getElementById('continuityReference').textContent=ref||'—';
-    document.getElementById('continuityTopic').textContent=topic||'Sin tema registrado';
-    const lib=getLibrary();
-    document.getElementById('continuityLibraryCount').textContent=lib.length+' '+(lib.length===1?'recurso':'recursos');
-    const recent=lib.slice().sort((a,b)=>(new Date(b.updated||b.created||0))-(new Date(a.updated||a.created||0))).slice(0,5);
-    document.getElementById('continuityRecent').innerHTML=recent.length
-      ? recent.map(x=>`<div class="continuity-log-row"><span><b>${String(x.title||'Sin título').replace(/[<>&"]/g,'')}</b><br><span class="continuity-muted">${String(x.reference||x.ref||x.type||'').replace(/[<>&"]/g,'')}</span></span><span class="continuity-muted">${x.updated?new Date(x.updated).toLocaleDateString('es-PA'):''}</span></div>`).join('')
-      : '<div class="continuity-muted" style="padding-top:10px">Todavía no hay recursos recientes en la biblioteca local.</div>';
-  };
-  window.continuityGoToLibrary=function(){
-    closeContinuityPanel();
-    const el=document.getElementById('library159') || document.getElementById('library53');
-    if(el){
-      el.scrollIntoView({behavior:'smooth',block:'start'});
-    }else{
-      alert('La Biblioteca Ministerial está disponible desde el menú correspondiente.');
-    }
-  };
-  window.continuityCopySummary=function(){
-    const summary='ESTUDIO BÍBLICO PRO 1.61\\nPasaje: '+getCurrentRef()+'\\nTema: '+(getCurrentTopic()||'Sin tema')+'\\nRecursos en biblioteca: '+getLibrary().length;
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(summary).then(()=>alert('✓ Resumen copiado.'));
-    }else{
-      const ta=document.createElement('textarea');ta.value=summary;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('✓ Resumen copiado.');
-    }
-  };
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeContinuityPanel();});
-})();
-</script>
-
-</body></html>');
+<div id="EBP155">Estudio Bíblico Pro 1.60 · iPad</div></body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
 }
 document.addEventListener('DOMContentLoaded',renderSlides);
@@ -11532,10 +11296,29 @@ document.addEventListener('DOMContentLoaded',renderLib53);
 @media(max-width:800px){.lib159-toolbar,.lib159-form{grid-template-columns:1fr}.lib159-full{grid-column:auto}}
 </style>
 
+
+<style id="ebp161-style">
+.d161-item{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:11px 12px;border:1px solid #dbe3ef;border-radius:12px;background:var(--card,#fff);cursor:pointer}
+.d161-item:hover{border-color:#9bb8dc}.d161-item.active{border:2px solid #2563eb}.d161-num{font-weight:800;min-width:28px}.d161-check{font-size:18px;width:22px}.d161-small{font-size:12px;color:#6b7280;margin-top:2px}
+@media(max-width:760px){#discipleship161 .grid{grid-template-columns:1fr!important}.d161-item{padding:12px}.d161-item .d161-small{font-size:11px}}
+</style>
+<section id="discipleship161" class="panel" style="margin-top:18px;">
+  <div class="panel-head"><div><h2>🧭 Discipulado 16 Lecciones</h2><p class="muted">Ruta formativa para acompañar al creyente desde la salvación hasta la madurez espiritual.</p></div><span class="badge">1.61</span></div>
+  <div id="d161Progress" class="callout" style="margin-bottom:12px;"></div>
+  <div class="grid" style="grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:14px;">
+    <div><div id="d161List" style="display:grid;gap:8px;"></div></div>
+    <div><div class="card" style="position:sticky;top:12px;">
+      <h3 id="d161Title" style="margin-top:0;">Selecciona una lección</h3><div id="d161Meta" class="muted"></div><div id="d161Body" style="margin-top:12px;"></div>
+      <label style="display:block;margin-top:14px;"><span class="label">Notas del maestro / seguimiento</span><textarea id="d161Notes" rows="7" placeholder="Anota observaciones, avances, preguntas o acuerdos."></textarea></label>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;"><button class="btn primary" onclick="saveD161Notes()">💾 Guardar notas</button><button class="btn" onclick="toggleD161Complete()">✓ Marcar / desmarcar</button><button class="btn" onclick="exportD161()">⬇️ Exportar ruta</button></div>
+      <div id="d161Status" class="status" style="margin-top:8px;"></div>
+    </div></div>
+  </div>
+</section>
 <section class="panel" id="library159" style="margin-top:18px;">
   <div class="panel-head">
     <div>
-      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.61</div>
+      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.60</div>
       <h2>📚 Biblioteca Ministerial</h2>
       <p class="muted">Unifica estudios, sermones, clases, discipulado e investigación en una biblioteca local con búsqueda, favoritos y copias de seguridad.</p>
     </div>
@@ -11566,7 +11349,7 @@ document.addEventListener('DOMContentLoaded',renderLib53);
         <input id="lib159Import" type="file" accept=".json,application/json" style="display:none" onchange="importLibrary159(event)">
       </div>
       <div class="lib159-full" style="margin-top:12px;border-top:1px solid #d9e1e8;padding-top:12px">
-        <div class="callout"><b>🛡️ Respaldo completo 1.61:</b> guarda una copia de los datos locales de toda la aplicación en un único archivo JSON. Esto protege estudios, notas, biblioteca, exégesis y demás información almacenada en este navegador.</div>
+        <div class="callout"><b>🛡️ Respaldo completo 1.60:</b> guarda una copia de los datos locales de toda la aplicación en un único archivo JSON. Esto protege estudios, notas, biblioteca, exégesis y demás información almacenada en este navegador.</div>
         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
           <button class="btn primary" onclick="backupApp160()">💾 Respaldar toda la aplicación</button>
           <button class="btn" onclick="document.getElementById('app160Import').click()">♻️ Restaurar respaldo completo</button>
@@ -11647,7 +11430,38 @@ function importLibrary159(event){
   reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!Array.isArray(parsed))throw new Error("Formato");setLibrary159(parsed.map(normalize159));renderLibrary159();alert("✓ Biblioteca restaurada correctamente.")}catch(e){alert("No se pudo importar el archivo. Debe ser una copia JSON de la Biblioteca Ministerial.")}event.target.value=""};reader.readAsText(file);
 }
 
-/* RESPALDO COMPLETO — Estudio Bíblico Pro 1.61 */
+
+/* ===== DISCIPULADO 16 LECCIONES · 1.61 ===== */
+const D161_KEY="EBP_DISCIPULADO_161";
+const D161_LESSONS=[
+ {t:"La salvación: mi nueva relación con Dios",v:"Juan 3:36",o:"Comprender qué ocurre al recibir a Cristo y cómo cambia nuestra relación con Dios."},
+ {t:"El nuevo nacimiento",v:"Juan 3:3–8",o:"Entender la necesidad y naturaleza del nacimiento espiritual."},
+ {t:"Mi identidad en Cristo",v:"2 Corintios 5:17",o:"Reconocer la nueva identidad del creyente en Cristo."},
+ {t:"La gracia que salva",v:"Efesios 2:8–10",o:"Distinguir salvación por gracia, fe y las buenas obras preparadas por Dios."},
+ {t:"Arrepentimiento y fe",v:"Marcos 1:15",o:"Comprender la respuesta integral del ser humano al evangelio."},
+ {t:"La Palabra de Dios",v:"2 Timoteo 3:16–17",o:"Aprender por qué la Escritura forma, corrige y equipa al creyente."},
+ {t:"Cómo estudiar la Biblia",v:"Hechos 17:11",o:"Practicar observación, interpretación y aplicación responsable del texto bíblico."},
+ {t:"La oración y mi relación con Dios",v:"Mateo 6:6",o:"Cultivar una vida de oración como comunión y dependencia de Dios."},
+ {t:"Permanecer en Cristo",v:"Juan 15:4–5",o:"Comprender la dependencia activa de Cristo como fuente de fruto espiritual."},
+ {t:"El Espíritu Santo y la vida del creyente",v:"Romanos 8:14",o:"Reconocer la obra del Espíritu en dirección, identidad y santificación."},
+ {t:"La obediencia de la fe",v:"Juan 14:15",o:"Relacionar amor, fe y obediencia sin convertir la obediencia en mérito para salvación."},
+ {t:"La iglesia y mi familia espiritual",v:"Efesios 2:19–22",o:"Entender pertenencia, comunión, servicio y edificación dentro del cuerpo de Cristo."},
+ {t:"Servicio y dones espirituales",v:"1 Pedro 4:10",o:"Identificar el servicio cristiano como mayordomía de la gracia recibida."},
+ {t:"Evangelismo y misión",v:"Mateo 28:18–20",o:"Asumir la misión de hacer discípulos y comunicar el evangelio."},
+ {t:"Pruebas, perseverancia y madurez",v:"Santiago 1:2–4",o:"Aprender a interpretar las pruebas desde la perspectiva de la formación espiritual."},
+ {t:"Una vida que glorifica a Cristo",v:"Colosenses 3:17",o:"Integrar identidad, Palabra, oración, obediencia, servicio y misión en una vida madura."}
+];
+let d161State={selected:0,done:[],notes:{}};
+function loadD161(){try{const x=JSON.parse(localStorage.getItem(D161_KEY)||"null");if(x&&typeof x==="object")d161State={...d161State,...x,done:Array.isArray(x.done)?x.done:[],notes:x.notes||{}}}catch(e){}}
+function saveD161(){localStorage.setItem(D161_KEY,JSON.stringify(d161State))}
+function renderD161(){const list=document.getElementById("d161List");if(!list)return;const completed=d161State.done.length,pct=Math.round(completed/D161_LESSONS.length*100);document.getElementById("d161Progress").innerHTML='<b>Progreso: '+completed+'/'+D161_LESSONS.length+' lecciones · '+pct+'%</b><div style="height:8px;background:#e5e7eb;border-radius:999px;margin-top:8px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:#2563eb;border-radius:999px"></div></div>';list.innerHTML=D161_LESSONS.map((x,i)=>'<button class="d161-item '+(i===d161State.selected?'active':'')+'" onclick="selectD161('+i+')"><span class="d161-check">'+(d161State.done.includes(i)?'✅':'⬜')+'</span><span class="d161-num">'+(i+1)+'</span><span><b>'+x.t+'</b><div class="d161-small">'+x.v+'</div></span></button>').join('');const x=D161_LESSONS[d161State.selected];document.getElementById("d161Title").textContent='Lección '+(d161State.selected+1)+': '+x.t;document.getElementById("d161Meta").textContent='Texto clave: '+x.v;document.getElementById("d161Body").innerHTML='<div class="callout"><b>Propósito:</b> '+x.o+'</div><p><b>Ruta sugerida:</b> oración → lectura del texto → observación → comprensión → conversación → práctica → seguimiento.</p><p class="muted">Este módulo es un marco pedagógico. El contenido bíblico completo debe trabajarse con una traducción autorizada y el contexto de cada pasaje.</p>';document.getElementById("d161Notes").value=d161State.notes[d161State.selected]||""}
+function selectD161(i){d161State.selected=i;saveD161();renderD161()}
+function saveD161Notes(){d161State.notes[d161State.selected]=document.getElementById("d161Notes").value;saveD161();document.getElementById("d161Status").textContent="✓ Notas guardadas localmente."}
+function toggleD161Complete(){const i=d161State.selected,p=d161State.done.indexOf(i);if(p>=0)d161State.done.splice(p,1);else d161State.done.push(i);d161State.done.sort((a,b)=>a-b);saveD161();renderD161();document.getElementById("d161Status").textContent="✓ Progreso actualizado."}
+function exportD161(){const payload={schema:"estudio-biblico-pro-discipulado",version:"1.61",exportedAt:new Date().toISOString(),lessons:D161_LESSONS,state:d161State};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Discipulado_16_Lecciones_1.61.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);document.getElementById("d161Status").textContent="✓ Ruta de discipulado exportada."}
+document.addEventListener("DOMContentLoaded",()=>{loadD161();setTimeout(renderD161,260)});
+
+/* RESPALDO COMPLETO — Estudio Bíblico Pro 1.60 */
 const APP_BACKUP_VERSION_160="1.61";
 function collectAppBackup160(){
   const storage={};
