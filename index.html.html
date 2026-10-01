@@ -3957,11 +3957,39 @@ function currentExport23(){
 }
 
 function export23(){
- const data=currentExport23(),format=document.getElementById("exportFormat23").value;
+ const data=currentExport23();
+ const format=document.getElementById("exportFormat23")?.value||"html";
  const preview=document.getElementById("exportPreview23");
+ if(!data||!preview)return;
  if(format==="html"){
-  const body=data.sections.map(s=>`<h2>${esc23(s[0])}</h2><p>${esc23(s[1]).replace(/\n/g,"<br>")}</p>`).join("");
-  const doc=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc23(data.title)}</title><style>body{font-family:Georgia,serif;max-width:850px;margin:40px auto;line-height:1.6;color:#222}h1{font-family:Arial}h2{border-bottom:1px solid #ccc;padding-bottom:4px}</style></head><body><h1>${esc23(data.title)}</h1>${body}
+  const body=data.sections.map(x=>`<h2>${esc23(x[0])}</h2><p>${esc23(x[1]).replace(/\n/g,"<br>")}</p>`).join("");
+  const doc=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc23(data.title)}</title><style>body{font-family:Georgia,serif;max-width:850px;margin:40px auto;line-height:1.6;color:#222}h1{font-family:Arial}h2{border-bottom:1px solid #ccc;padding-bottom:4px}</style></head><body><h1>${esc23(data.title)}</h1>${body}</body></html>`;
+  const blob=new Blob([doc],{type:"text/html;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Documento HTML generado.</b>";
+ }else if(format==="txt"){
+  const txt=data.title+"\n\n"+data.sections.map(x=>x[0].toUpperCase()+"\n"+x[1]).join("\n\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=(data.title||"estudio")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Texto estructurado generado.</b>";
+ }else if(format==="ppt-outline"){
+  const txt=data.title+"\n\n"+data.sections.map((x,i)=>`DIAPOSITIVA ${i+1}: ${x[0]}\n${x[1]}`).join("\n\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="guion_PowerPoint_"+(data.title||"estudio")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Guion de PowerPoint generado.</b>";
+ }else{
+  preview.innerHTML=`<h3>📄 ${esc23(data.title)}</h3><p>Usa <b>Imprimir / guardar como PDF</b> para obtener un PDF desde el navegador.</p>`;
+ }
+}
+function print23(){
+ const data=currentExport23(),win=window.open("","_blank");
+ if(!win){alert("El navegador bloqueó la ventana de impresión. Permite ventanas emergentes.");return}
+ const body=data.sections.map(x=>`<h2>${esc23(x[0])}</h2><p>${esc23(x[1]).replace(/\n/g,"<br>")}</p>`).join("");
+ win.document.write(`<!doctype html><html><head><title>${esc23(data.title)}</title><style>body{font-family:Arial;max-width:850px;margin:35px auto;line-height:1.55}h1{font-size:28px}h2{margin-top:25px;border-bottom:1px solid #bbb;padding-bottom:4px}</style></head><body><h1>${esc23(data.title)}</h1>${body}</body></html>`);
+ win.document.close();win.focus();setTimeout(()=>win.print(),300);
+}
+document.addEventListener('DOMContentLoaded',()=>{try{if(document.getElementById('exportPreview23')){}}catch(e){}});
+</script>
+
+
 <section id="projects24" class="panel" style="display:none">
   <div class="panel-head">
     <div>
@@ -6185,12 +6213,7 @@ function renderTraining(){
     ).join('')+
     '<div class="card"><h3>🛠️ Práctica ministerial</h3><p>'+d.practice+'</p></div>'+
     '<div class="card"><h3>✅ Evaluación</h3><p>'+d.assessment+'</p>'+
-      '<label>Autoevaluación:
-        <select id="trainScore" onchange="saveTrainingScore()">
-          <option value="">Seleccionar...</option>
-          <option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option>
-        </select>
-      </label>'+
+      '<label>Autoevaluación: <select id="trainScore" onchange="saveTrainingScore()"><option value="">Seleccionar...</option><option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option></select></label>'+
       '<p id="trainSaved" class="muted"></p></div>'+
     '<div class="card"><h3>🪞 Pregunta de reflexión</h3><p>'+d.reflection+'</p></div>';
   const saved=localStorage.getItem("EBP_TRAINING_SCORE_146_"+d.passage);
@@ -6299,15 +6322,7 @@ function renderDiscipleship(){
         '<h3>'+(i+1)+'. '+s[1]+'</h3>'+
         '<p><strong>Indicador:</strong> '+s[2]+'</p>'+
         '<p><strong>Evidencia:</strong> '+s[3]+'</p>'+
-        '<label>Estado
-          <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)">
-            <option value="">Sin registrar</option>
-            <option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option>
-            <option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option>
-            <option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option>
-            <option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option>
-          </select>
-        </label>'+
+        '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
       '</div>'
     }).join('')+
     '<div class="card">'+
@@ -6477,11 +6492,7 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
-      '<option value="">Pendiente</option>'+
-      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
-      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
-    '</select></label>'+
+    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -6961,11 +6972,14 @@ function copyExport(){
  });
 }
 function printExport(){
- const d=exportData();
- const w=window.open("","_blank");
+ const d=exportData(),w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body>'+
- '<h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div>
+ const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
+ w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -7104,11 +7118,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -7225,7 +7242,7 @@ function deleteLib53(id){
 document.addEventListener('DOMContentLoaded',renderLib53);
 </script>
 
-<div id="EBP155">Estudio Bíblico Pro 1.60 · iPad</div></body></html>');
+<div id="EBP155">Estudio Bíblico Pro 1.61 · iPad</div></body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
 }
 document.addEventListener('DOMContentLoaded',renderSlides);
@@ -7493,11 +7510,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -7737,29 +7757,6 @@ function deleteLib53(id){
 document.addEventListener('DOMContentLoaded',renderLib53);
 </script>
 
-</body></html>`;
-  const blob=new Blob([doc],{type:"text/html;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Documento HTML generado.</b> Revisa la carpeta de descargas del dispositivo.";
- }else if(format==="txt"){
-  const txt=data.title+"\n\n"+data.sections.map(s=>s[0].toUpperCase()+"\n"+s[1]).join("\n\n");
-  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Texto estructurado generado.</b>";
- }else if(format==="ppt-outline"){
-  const txt=data.title+"\n\n"+data.sections.map((s,i)=>`DIAPOSITIVA ${i+1}: ${s[0]}\n${s[1]}`).join("\n\n");
-  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="guion_PowerPoint_"+(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Guion de PowerPoint generado.</b> Cada sección está preparada como posible diapositiva.";
- }else{
-  preview.innerHTML=`<h3>📄 ${esc23(data.title)}</h3><p>Para ${format.toUpperCase()}, la aplicación local necesita el módulo de generación de archivos. Puedes usar <b>Imprimir / guardar como PDF</b> para obtener un PDF desde el navegador.</p>`;
- }
-}
-function print23(){
- const data=currentExport23();
- const win=window.open("","_blank");
- if(!win){alert("El navegador bloqueó la ventana de impresión. Permite ventanas emergentes.");return}
- win.document.write(`<html><head><title>${esc23(data.title)}</title><style>body{font-family:Arial;max-width:850px;margin:35px auto;line-height:1.55}h1{font-size:28px}h2{margin-top:25px;border-bottom:1px solid #bbb;padding-bottom:4px}@media print{body{margin:20mm}}</style></head><body><h1>${esc23(data.title)}</h1>${data.sections.map(s=>`<h2>${esc23(s[0])}</h2><p>${esc23(s[1]).replace(/\n/g,"<br>")}</p>`).join("")}
 <section id="pastoral" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🧭 Motor de Teología Pastoral y Aplicación</h2>
@@ -7964,12 +7961,7 @@ function renderTraining(){
     ).join('')+
     '<div class="card"><h3>🛠️ Práctica ministerial</h3><p>'+d.practice+'</p></div>'+
     '<div class="card"><h3>✅ Evaluación</h3><p>'+d.assessment+'</p>'+
-      '<label>Autoevaluación:
-        <select id="trainScore" onchange="saveTrainingScore()">
-          <option value="">Seleccionar...</option>
-          <option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option>
-        </select>
-      </label>'+
+      '<label>Autoevaluación: <select id="trainScore" onchange="saveTrainingScore()"><option value="">Seleccionar...</option><option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option></select></label>'+
       '<p id="trainSaved" class="muted"></p></div>'+
     '<div class="card"><h3>🪞 Pregunta de reflexión</h3><p>'+d.reflection+'</p></div>';
   const saved=localStorage.getItem("EBP_TRAINING_SCORE_146_"+d.passage);
@@ -8078,15 +8070,7 @@ function renderDiscipleship(){
         '<h3>'+(i+1)+'. '+s[1]+'</h3>'+
         '<p><strong>Indicador:</strong> '+s[2]+'</p>'+
         '<p><strong>Evidencia:</strong> '+s[3]+'</p>'+
-        '<label>Estado
-          <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)">
-            <option value="">Sin registrar</option>
-            <option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option>
-            <option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option>
-            <option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option>
-            <option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option>
-          </select>
-        </label>'+
+        '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
       '</div>'
     }).join('')+
     '<div class="card">'+
@@ -8256,11 +8240,7 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
-      '<option value="">Pendiente</option>'+
-      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
-      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
-    '</select></label>'+
+    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -8740,11 +8720,14 @@ function copyExport(){
  });
 }
 function printExport(){
- const d=exportData();
- const w=window.open("","_blank");
+ const d=exportData(),w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body>'+
- '<h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div>
+ const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
+ w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -8883,11 +8866,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -9272,11 +9258,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -9726,12 +9715,7 @@ function renderTraining(){
     ).join('')+
     '<div class="card"><h3>🛠️ Práctica ministerial</h3><p>'+d.practice+'</p></div>'+
     '<div class="card"><h3>✅ Evaluación</h3><p>'+d.assessment+'</p>'+
-      '<label>Autoevaluación:
-        <select id="trainScore" onchange="saveTrainingScore()">
-          <option value="">Seleccionar...</option>
-          <option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option>
-        </select>
-      </label>'+
+      '<label>Autoevaluación: <select id="trainScore" onchange="saveTrainingScore()"><option value="">Seleccionar...</option><option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option></select></label>'+
       '<p id="trainSaved" class="muted"></p></div>'+
     '<div class="card"><h3>🪞 Pregunta de reflexión</h3><p>'+d.reflection+'</p></div>';
   const saved=localStorage.getItem("EBP_TRAINING_SCORE_146_"+d.passage);
@@ -9840,15 +9824,7 @@ function renderDiscipleship(){
         '<h3>'+(i+1)+'. '+s[1]+'</h3>'+
         '<p><strong>Indicador:</strong> '+s[2]+'</p>'+
         '<p><strong>Evidencia:</strong> '+s[3]+'</p>'+
-        '<label>Estado
-          <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)">
-            <option value="">Sin registrar</option>
-            <option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option>
-            <option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option>
-            <option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option>
-            <option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option>
-          </select>
-        </label>'+
+        '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
       '</div>'
     }).join('')+
     '<div class="card">'+
@@ -10018,11 +9994,7 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
-      '<option value="">Pendiente</option>'+
-      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
-      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
-    '</select></label>'+
+    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -10502,11 +10474,14 @@ function copyExport(){
  });
 }
 function printExport(){
- const d=exportData();
- const w=window.open("","_blank");
+ const d=exportData(),w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body>'+
- '<h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div>
+ const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
+ w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -10645,11 +10620,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -11034,11 +11012,14 @@ function copySlides(){
  });
 }
 function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const w=window.open("","_blank");
+ const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
  if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(s=>'<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'
+ const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
+ w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
+}
+</script>
+
+
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
