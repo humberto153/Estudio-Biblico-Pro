@@ -314,7 +314,7 @@ textarea{min-height:110px}
   <button id="ebp155Menu" class="btn" aria-label="Abrir menú">☰</button>
   <div>
     <div id="ebp155Title">📖 Estudio Bíblico Pro</div>
-    <div id="ebp155Sub">Versión 1.60 · Biblioteca Ministerial</div>
+    <div id="ebp155Sub">Versión 1.61 · Biblioteca Ministerial</div>
   </div>
 </div>
 <div id="ebp155Overlay"></div>
@@ -328,6 +328,7 @@ textarea{min-height:110px}
     <button data-target="unifiedWorkspace">🎓 Seminario</button>
     <button data-target="unifiedWorkspace">💾 Guardar estudio</button>
     <button data-target="library159">📚 Biblioteca ministerial</button>
+    <button data-target="discipleship161">🧭 Discipulado 16 lecciones</button>
   </div>
   <hr style="margin:18px 0">
   <div class="notice">
@@ -602,7 +603,7 @@ textarea{min-height:110px}
   window.uwExport=function(){
     const d=ensure();
     const text=[
-      'ESTUDIO BÍBLICO PRO 1.60',
+      'ESTUDIO BÍBLICO PRO 1.61',
       'Título: '+d.title,'Referencia: '+d.ref,'Tipo: '+$('uwType').value,
       'Idea central: '+(d.idea||''),'',
       'OBSERVACIÓN',d.observation,'',
@@ -11295,6 +11296,25 @@ document.addEventListener('DOMContentLoaded',renderLib53);
 @media(max-width:800px){.lib159-toolbar,.lib159-form{grid-template-columns:1fr}.lib159-full{grid-column:auto}}
 </style>
 
+
+<style id="ebp161-style">
+.d161-item{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:11px 12px;border:1px solid #dbe3ef;border-radius:12px;background:var(--card,#fff);cursor:pointer}
+.d161-item:hover{border-color:#9bb8dc}.d161-item.active{border:2px solid #2563eb}.d161-num{font-weight:800;min-width:28px}.d161-check{font-size:18px;width:22px}.d161-small{font-size:12px;color:#6b7280;margin-top:2px}
+@media(max-width:760px){#discipleship161 .grid{grid-template-columns:1fr!important}.d161-item{padding:12px}.d161-item .d161-small{font-size:11px}}
+</style>
+<section id="discipleship161" class="panel" style="margin-top:18px;">
+  <div class="panel-head"><div><h2>🧭 Discipulado 16 Lecciones</h2><p class="muted">Ruta formativa para acompañar al creyente desde la salvación hasta la madurez espiritual.</p></div><span class="badge">1.61</span></div>
+  <div id="d161Progress" class="callout" style="margin-bottom:12px;"></div>
+  <div class="grid" style="grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:14px;">
+    <div><div id="d161List" style="display:grid;gap:8px;"></div></div>
+    <div><div class="card" style="position:sticky;top:12px;">
+      <h3 id="d161Title" style="margin-top:0;">Selecciona una lección</h3><div id="d161Meta" class="muted"></div><div id="d161Body" style="margin-top:12px;"></div>
+      <label style="display:block;margin-top:14px;"><span class="label">Notas del maestro / seguimiento</span><textarea id="d161Notes" rows="7" placeholder="Anota observaciones, avances, preguntas o acuerdos."></textarea></label>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;"><button class="btn primary" onclick="saveD161Notes()">💾 Guardar notas</button><button class="btn" onclick="toggleD161Complete()">✓ Marcar / desmarcar</button><button class="btn" onclick="exportD161()">⬇️ Exportar ruta</button></div>
+      <div id="d161Status" class="status" style="margin-top:8px;"></div>
+    </div></div>
+  </div>
+</section>
 <section class="panel" id="library159" style="margin-top:18px;">
   <div class="panel-head">
     <div>
@@ -11399,19 +11419,50 @@ function editLibrary159(id){
 function deleteLibrary159(id){const data=getLibrary159(),x=data.find(a=>a.id===id);if(!x)return;if(!confirm('¿Eliminar "'+x.title+'"?'))return;setLibrary159(data.filter(a=>a.id!==id));renderLibrary159()}
 function exportLibrary159(id){
   const x=getLibrary159().find(a=>a.id===id);if(!x)return;
-  const text="ESTUDIO BÍBLICO PRO 1.60\\n\\nTítulo: "+x.title+"\\nTipo: "+x.type+"\\nReferencia: "+x.ref+"\\nEtiquetas: "+(x.tags||[]).join(", ")+"\\n\\nCONTENIDO\\n"+(x.summary||"");
+  const text="ESTUDIO BÍBLICO PRO 1.61\\n\\nTítulo: "+x.title+"\\nTipo: "+x.type+"\\nReferencia: "+x.ref+"\\nEtiquetas: "+(x.tags||[]).join(", ")+"\\n\\nCONTENIDO\\n"+(x.summary||"");
   const blob=new Blob([text],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(x.title||"recurso").replace(/[\\\\/:*?"<>|]/g,"-")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function backupLibrary159(){
-  const blob=new Blob([JSON.stringify(getLibrary159(),null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Biblioteca_1.60.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const blob=new Blob([JSON.stringify(getLibrary159(),null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Biblioteca_1.61.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 function importLibrary159(event){
   const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();
   reader.onload=()=>{try{const parsed=JSON.parse(reader.result);if(!Array.isArray(parsed))throw new Error("Formato");setLibrary159(parsed.map(normalize159));renderLibrary159();alert("✓ Biblioteca restaurada correctamente.")}catch(e){alert("No se pudo importar el archivo. Debe ser una copia JSON de la Biblioteca Ministerial.")}event.target.value=""};reader.readAsText(file);
 }
 
+
+/* ===== DISCIPULADO 16 LECCIONES · 1.61 ===== */
+const D161_KEY="EBP_DISCIPULADO_161";
+const D161_LESSONS=[
+ {t:"La salvación: mi nueva relación con Dios",v:"Juan 3:36",o:"Comprender qué ocurre al recibir a Cristo y cómo cambia nuestra relación con Dios."},
+ {t:"El nuevo nacimiento",v:"Juan 3:3–8",o:"Entender la necesidad y naturaleza del nacimiento espiritual."},
+ {t:"Mi identidad en Cristo",v:"2 Corintios 5:17",o:"Reconocer la nueva identidad del creyente en Cristo."},
+ {t:"La gracia que salva",v:"Efesios 2:8–10",o:"Distinguir salvación por gracia, fe y las buenas obras preparadas por Dios."},
+ {t:"Arrepentimiento y fe",v:"Marcos 1:15",o:"Comprender la respuesta integral del ser humano al evangelio."},
+ {t:"La Palabra de Dios",v:"2 Timoteo 3:16–17",o:"Aprender por qué la Escritura forma, corrige y equipa al creyente."},
+ {t:"Cómo estudiar la Biblia",v:"Hechos 17:11",o:"Practicar observación, interpretación y aplicación responsable del texto bíblico."},
+ {t:"La oración y mi relación con Dios",v:"Mateo 6:6",o:"Cultivar una vida de oración como comunión y dependencia de Dios."},
+ {t:"Permanecer en Cristo",v:"Juan 15:4–5",o:"Comprender la dependencia activa de Cristo como fuente de fruto espiritual."},
+ {t:"El Espíritu Santo y la vida del creyente",v:"Romanos 8:14",o:"Reconocer la obra del Espíritu en dirección, identidad y santificación."},
+ {t:"La obediencia de la fe",v:"Juan 14:15",o:"Relacionar amor, fe y obediencia sin convertir la obediencia en mérito para salvación."},
+ {t:"La iglesia y mi familia espiritual",v:"Efesios 2:19–22",o:"Entender pertenencia, comunión, servicio y edificación dentro del cuerpo de Cristo."},
+ {t:"Servicio y dones espirituales",v:"1 Pedro 4:10",o:"Identificar el servicio cristiano como mayordomía de la gracia recibida."},
+ {t:"Evangelismo y misión",v:"Mateo 28:18–20",o:"Asumir la misión de hacer discípulos y comunicar el evangelio."},
+ {t:"Pruebas, perseverancia y madurez",v:"Santiago 1:2–4",o:"Aprender a interpretar las pruebas desde la perspectiva de la formación espiritual."},
+ {t:"Una vida que glorifica a Cristo",v:"Colosenses 3:17",o:"Integrar identidad, Palabra, oración, obediencia, servicio y misión en una vida madura."}
+];
+let d161State={selected:0,done:[],notes:{}};
+function loadD161(){try{const x=JSON.parse(localStorage.getItem(D161_KEY)||"null");if(x&&typeof x==="object")d161State={...d161State,...x,done:Array.isArray(x.done)?x.done:[],notes:x.notes||{}}}catch(e){}}
+function saveD161(){localStorage.setItem(D161_KEY,JSON.stringify(d161State))}
+function renderD161(){const list=document.getElementById("d161List");if(!list)return;const completed=d161State.done.length,pct=Math.round(completed/D161_LESSONS.length*100);document.getElementById("d161Progress").innerHTML='<b>Progreso: '+completed+'/'+D161_LESSONS.length+' lecciones · '+pct+'%</b><div style="height:8px;background:#e5e7eb;border-radius:999px;margin-top:8px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:#2563eb;border-radius:999px"></div></div>';list.innerHTML=D161_LESSONS.map((x,i)=>'<button class="d161-item '+(i===d161State.selected?'active':'')+'" onclick="selectD161('+i+')"><span class="d161-check">'+(d161State.done.includes(i)?'✅':'⬜')+'</span><span class="d161-num">'+(i+1)+'</span><span><b>'+x.t+'</b><div class="d161-small">'+x.v+'</div></span></button>').join('');const x=D161_LESSONS[d161State.selected];document.getElementById("d161Title").textContent='Lección '+(d161State.selected+1)+': '+x.t;document.getElementById("d161Meta").textContent='Texto clave: '+x.v;document.getElementById("d161Body").innerHTML='<div class="callout"><b>Propósito:</b> '+x.o+'</div><p><b>Ruta sugerida:</b> oración → lectura del texto → observación → comprensión → conversación → práctica → seguimiento.</p><p class="muted">Este módulo es un marco pedagógico. El contenido bíblico completo debe trabajarse con una traducción autorizada y el contexto de cada pasaje.</p>';document.getElementById("d161Notes").value=d161State.notes[d161State.selected]||""}
+function selectD161(i){d161State.selected=i;saveD161();renderD161()}
+function saveD161Notes(){d161State.notes[d161State.selected]=document.getElementById("d161Notes").value;saveD161();document.getElementById("d161Status").textContent="✓ Notas guardadas localmente."}
+function toggleD161Complete(){const i=d161State.selected,p=d161State.done.indexOf(i);if(p>=0)d161State.done.splice(p,1);else d161State.done.push(i);d161State.done.sort((a,b)=>a-b);saveD161();renderD161();document.getElementById("d161Status").textContent="✓ Progreso actualizado."}
+function exportD161(){const payload={schema:"estudio-biblico-pro-discipulado",version:"1.61",exportedAt:new Date().toISOString(),lessons:D161_LESSONS,state:d161State};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Discipulado_16_Lecciones_1.61.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);document.getElementById("d161Status").textContent="✓ Ruta de discipulado exportada."}
+document.addEventListener("DOMContentLoaded",()=>{loadD161();setTimeout(renderD161,260)});
+
 /* RESPALDO COMPLETO — Estudio Bíblico Pro 1.60 */
-const APP_BACKUP_VERSION_160="1.60";
+const APP_BACKUP_VERSION_160="1.61";
 function collectAppBackup160(){
   const storage={};
   for(let i=0;i<localStorage.length;i++){
@@ -11435,7 +11486,7 @@ function backupApp160(){
     const a=document.createElement("a");
     a.href=URL.createObjectURL(blob);
     const stamp=new Date().toISOString().replace(/[:.]/g,"-").slice(0,19);
-    a.download="Estudio_Biblico_Pro_Respaldo_Completo_1.60_"+stamp+".json";
+    a.download="Estudio_Biblico_Pro_Respaldo_Completo_1.61_"+stamp+".json";
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     const st=document.getElementById("backup160Status");
