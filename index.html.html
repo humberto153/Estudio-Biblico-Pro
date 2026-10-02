@@ -31,7 +31,7 @@ main{padding:18px;max-width:1500px;width:100%;margin:auto}
 @media(max-width:1100px){.grid{grid-template-columns:1fr 1fr}.grid .right{grid-column:1/-1}.sidebar{display:none}.layout{grid-template-columns:1fr}}
 @media(max-width:720px){.header{height:auto;padding:14px;flex-wrap:wrap}.logo{min-width:auto}.search{order:3;flex-basis:100%}.toplinks{display:none}.grid{grid-template-columns:1fr}.toolbar{flex-wrap:wrap}.input{width:100%}}
 
-/* ===== Estudio Bíblico Pro 1.60 · Motor bíblico ===== */
+/* ===== Estudio Bíblico Pro 1.61 · Motor bíblico ===== */
 .search-grid{display:grid;grid-template-columns:1.335fr 1fr;gap:18px;margin-top:14px}
 .search-row{display:flex;gap:8px;margin-top:7px}
 .search-row input{flex:1;min-width:0}
@@ -377,7 +377,7 @@ textarea{min-height:110px}
       <h2>🧠 Centro de Estudio Unificado</h2>
       <p class="muted">Un solo pasaje alimenta todo el flujo de estudio, enseñanza y predicación.</p>
     </div>
-    <span class="badge">1.60</span>
+    <span class="badge">1.61</span>
   </div>
 
   <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
@@ -3957,38 +3957,22 @@ function currentExport23(){
 }
 
 function export23(){
- const data=currentExport23();
- const format=document.getElementById("exportFormat23")?.value||"html";
+ const data=currentExport23(),format=document.getElementById("exportFormat23").value;
  const preview=document.getElementById("exportPreview23");
- if(!data||!preview)return;
+ if(!preview)return;
  if(format==="html"){
-  const body=data.sections.map(x=>`<h2>${esc23(x[0])}</h2><p>${esc23(x[1]).replace(/\n/g,"<br>")}</p>`).join("");
+  const body=data.sections.map(s=>`<h2>${esc23(s[0])}</h2><p>${esc23(s[1]).replace(/\n/g,"<br>")}</p>`).join("");
   const doc=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc23(data.title)}</title><style>body{font-family:Georgia,serif;max-width:850px;margin:40px auto;line-height:1.6;color:#222}h1{font-family:Arial}h2{border-bottom:1px solid #ccc;padding-bottom:4px}</style></head><body><h1>${esc23(data.title)}</h1>${body}</body></html>`;
-  const blob=new Blob([doc],{type:"text/html;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Documento HTML generado.</b>";
- }else if(format==="txt"){
-  const txt=data.title+"\n\n"+data.sections.map(x=>x[0].toUpperCase()+"\n"+x[1]).join("\n\n");
-  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=(data.title||"estudio")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Texto estructurado generado.</b>";
- }else if(format==="ppt-outline"){
-  const txt=data.title+"\n\n"+data.sections.map((x,i)=>`DIAPOSITIVA ${i+1}: ${x[0]}\n${x[1]}`).join("\n\n");
-  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="guion_PowerPoint_"+(data.title||"estudio")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  preview.innerHTML="<b>Guion de PowerPoint generado.</b>";
- }else{
-  preview.innerHTML=`<h3>📄 ${esc23(data.title)}</h3><p>Usa <b>Imprimir / guardar como PDF</b> para obtener un PDF desde el navegador.</p>`;
+  preview.innerHTML=`<div class="card"><h3>Vista previa</h3><iframe title="Vista previa de exportación" style="width:100%;min-height:500px;border:1px solid #ddd;border-radius:10px;background:#fff" srcdoc='${doc.replace(/'/g,"&#39;")}'></iframe></div>`;
+  return;
  }
+ if(format==="txt"){
+  preview.innerHTML=`<div class="card"><pre style="white-space:pre-wrap">${esc23(data.sections.map(s=>s[0]+"\n"+s[1]).join("\n\n"))}</pre></div>`;
+  return;
+ }
+ preview.innerHTML=`<div class="card"><pre style="white-space:pre-wrap">${esc23(JSON.stringify(data,null,2))}</pre></div>`;
 }
-function print23(){
- const data=currentExport23(),win=window.open("","_blank");
- if(!win){alert("El navegador bloqueó la ventana de impresión. Permite ventanas emergentes.");return}
- const body=data.sections.map(x=>`<h2>${esc23(x[0])}</h2><p>${esc23(x[1]).replace(/\n/g,"<br>")}</p>`).join("");
- win.document.write(`<!doctype html><html><head><title>${esc23(data.title)}</title><style>body{font-family:Arial;max-width:850px;margin:35px auto;line-height:1.55}h1{font-size:28px}h2{margin-top:25px;border-bottom:1px solid #bbb;padding-bottom:4px}</style></head><body><h1>${esc23(data.title)}</h1>${body}</body></html>`);
- win.document.close();win.focus();setTimeout(()=>win.print(),300);
-}
-document.addEventListener('DOMContentLoaded',()=>{try{if(document.getElementById('exportPreview23')){}}catch(e){}});
 </script>
-
 
 <section id="projects24" class="panel" style="display:none">
   <div class="panel-head">
@@ -4025,7 +4009,6 @@ document.addEventListener('DOMContentLoaded',()=>{try{if(document.getElementById
   <div id="projectsList24"></div>
   <div id="projectDetail24" style="margin-top:16px"></div>
 </section>
-
 
 <script>
 /* Estudio Bíblico Pro 1.43 — Sistema de proyectos */
@@ -4154,6 +4137,8 @@ document.addEventListener("DOMContentLoaded",()=>setTimeout(renderProjects24,200
 
 
 <script>
+</script>
+
 /* Estudio Bíblico Pro 1.43 — Panel de investigación */
 const RESEARCH25_KEY="ebp_research_v125";
 
@@ -6492,7 +6477,11 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
+    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
+      '<option value="">Pendiente</option>'+
+      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
+      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
+    '</select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -6887,99 +6876,7 @@ document.addEventListener('DOMContentLoaded',loadAuthoring);
   </div>
 </section>
 
-<script>
-const EXPORT_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  objective:"Comprender la reconciliación realizada por Cristo y vivirla en la comunión del pueblo de Dios.",
-  observations:"Pablo recuerda la antigua condición de los gentiles, presenta el acercamiento por medio de Cristo y termina con las imágenes de ciudadanía, familia y templo.",
-  words:"μακράν — lejos; ἐγγύς — cerca; εἰρήνη — paz; προσαγωγή — acceso; οἰκεῖοι — familia; ναός — templo.",
-  theology:"Cristología: Cristo es nuestra paz. Soteriología: Cristo reconcilia. Eclesiología: somos familia y edificio de Dios. Pneumatología: acceso al Padre en un mismo Espíritu.",
-  application:"Vivir desde la reconciliación, derribar barreras innecesarias, cultivar comunión y acercarnos a Dios con confianza.",
-  refs:"Isaías 57:19; Juan 10:16; Romanos 5:1–2; Gálatas 3:28; Colosenses 1:19–22; 1 Pedro 2:9–10."
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  objective:"Comprender la relación entre gracia, fe, salvación y obediencia.",
-  observations:"Los vv. 8–9 excluyen la jactancia y las obras como fundamento de salvación; el v. 10 presenta las buenas obras como fruto de la nueva creación.",
-  words:"χάρις — gracia; πίστις — fe; ποίημα — hechura/obra.",
-  theology:"Soteriología: salvación por gracia mediante la fe. Antropología: somos hechura de Dios. Santificación: somos creados para buenas obras.",
-  application:"Descansar en la gracia y responder con obediencia, servicio y gratitud.",
-  refs:"Romanos 3:23–28; Tito 2:11–14; Tito 3:5; 2 Corintios 5:17."
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  objective:"Comprender la dimensión cristológica, comunitaria y trinitaria de la reconciliación.",
-  observations:"Cristo es presentado como nuestra paz; su obra afecta la separación entre grupos y culmina en acceso al Padre.",
-  words:"εἰρήνη — paz; καταργέω — abolir/anular; ἀποκαταλλάσσω — reconciliar; προσαγωγή — acceso.",
-  theology:"Cristología: Cristo realiza la paz. Soteriología: reconciliación. Eclesiología: unidad. Pneumatología: acceso al Padre en el Espíritu.",
-  application:"Buscar reconciliación, proteger la unidad y vivir una oración confiada delante del Padre.",
-  refs:"Romanos 5:1–2; Colosenses 1:20–22; Efesios 4:1–6; 1 Corintios 12:13."
- }
-};
-
-function exportData(){return EXPORT_DATA[document.getElementById('expStudy').value];}
-function exportText(){
- const d=exportData(), f=document.getElementById('expFormat').value;
- let title=d.title;
- let out=title+"\n\nPASaje: "+d.text+"\n\nIDEA CENTRAL\n"+d.idea+"\n\nOBJETIVO\n"+d.objective+"\n\nOBSERVACIONES\n"+d.observations+"\n\nGRIEGO/HEBREO\n"+d.words+"\n\nTEOLOGÍA\n"+d.theology+"\n\nAPLICACIÓN\n"+d.application+"\n\nREFERENCIAS\n"+d.refs;
- if(f==="outline") out=title+"\n\nTEXTO: "+d.text+"\n\n1. INTRODUCCIÓN\nPresentar la tensión del pasaje.\n\n2. DESARROLLO\nA. Observación\n"+d.observations+"\n\nB. Teología\n"+d.theology+"\n\nC. Aplicación\n"+d.application+"\n\n3. CONCLUSIÓN\nRepetir la idea central y conducir a una respuesta.";
- if(f==="teacher") out=title+"\n\nGUÍA DEL MAESTRO\n\nObjetivo: "+d.objective+"\n\nTexto: "+d.text+"\n\nObservación: "+d.observations+"\n\nPreguntas:\n¿Qué dice el texto?\n¿Qué significa?\n¿Qué revela acerca de Dios?\n¿Cómo debemos responder?\n\nTeología: "+d.theology+"\n\nAplicación: "+d.application+"\n\nReferencias: "+d.refs;
- if(f==="sermon") out=title+"\n\nSERMÓN EXPOSITIVO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nI. EL CONTEXTO Y LA NECESIDAD\n"+d.observations+"\n\nII. LA OBRA DE CRISTO\n"+d.theology+"\n\nIII. NUESTRA RESPUESTA\n"+d.application+"\n\nCONCLUSIÓN\nReafirmar la idea central y llamar a una respuesta bíblica.";
- if(f==="student") out=title+"\n\nHOJA DEL ALUMNO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nMis observaciones:\n1. __________________________\n2. __________________________\n3. __________________________\n\n¿Qué aprendí acerca de Dios?\n____________________________\n\n¿Cómo responderé?\n"+d.application+"\n\nOración:\n____________________________";
- return out;
-}
-function renderExportPreview(){
- const d=exportData();
- document.getElementById('exportPreview').innerHTML=
-  '<h3>👁️ Vista previa</h3>'+
-  '<h2>'+d.title+'</h2>'+
-  '<p><strong>Texto:</strong> '+d.text+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Objetivo:</strong> '+d.objective+'</p>'+
-  '<p><strong>Teología:</strong> '+d.theology+'</p>'+
-  '<p><strong>Aplicación:</strong> '+d.application+'</p>'+
-  '<p><strong>Referencias:</strong> '+d.refs+'</p>';
-}
-function downloadBlob(content,name,type){
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([content],{type:type}));
- a.download=name;
- a.click();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function downloadExportText(){
- const d=exportData();
- downloadBlob(exportText(),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".txt","text/plain;charset=utf-8");
- document.getElementById('exportMsg').textContent="TXT generado.";
-}
-function downloadExportJSON(){
- const d=exportData();
- downloadBlob(JSON.stringify(d,null,2),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".json","application/json;charset=utf-8");
- document.getElementById('exportMsg').textContent="JSON generado.";
-}
-function copyExport(){
- navigator.clipboard.writeText(exportText()).then(()=>{
-  document.getElementById('exportMsg').textContent="Contenido copiado al portapapeles.";
- }).catch(()=>{
-  document.getElementById('exportMsg').textContent="No fue posible acceder al portapapeles desde este navegador.";
- });
-}
-function printExport(){
- const d=exportData(),w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
- w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -7020,112 +6917,7 @@ function printExport(){
     <p id="slidesMsg" class="muted"></p>
   </div>
 </section>
-
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -7166,81 +6958,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 <div id="EBP155">Estudio Bíblico Pro 1.61 · iPad</div></body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -7413,111 +7130,8 @@ document.addEventListener('DOMContentLoaded',renderExportPreview);
   </div>
 </section>
 
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -7558,81 +7172,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 </body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -7757,6 +7296,29 @@ function deleteLib53(id){
 document.addEventListener('DOMContentLoaded',renderLib53);
 </script>
 
+</body></html>`;
+  const blob=new Blob([doc],{type:"text/html;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".html";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Documento HTML generado.</b> Revisa la carpeta de descargas del dispositivo.";
+ }else if(format==="txt"){
+  const txt=data.title+"\n\n"+data.sections.map(s=>s[0].toUpperCase()+"\n"+s[1]).join("\n\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Texto estructurado generado.</b>";
+ }else if(format==="ppt-outline"){
+  const txt=data.title+"\n\n"+data.sections.map((s,i)=>`DIAPOSITIVA ${i+1}: ${s[0]}\n${s[1]}`).join("\n\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="guion_PowerPoint_"+(data.title||"estudio").replace(/[^a-z0-9áéíóúñü]+/gi,"_")+".txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  preview.innerHTML="<b>Guion de PowerPoint generado.</b> Cada sección está preparada como posible diapositiva.";
+ }else{
+  preview.innerHTML=`<h3>📄 ${esc23(data.title)}</h3><p>Para ${format.toUpperCase()}, la aplicación local necesita el módulo de generación de archivos. Puedes usar <b>Imprimir / guardar como PDF</b> para obtener un PDF desde el navegador.</p>`;
+ }
+}
+function print23(){
+ const data=currentExport23();
+ const win=window.open("","_blank");
+ if(!win){alert("El navegador bloqueó la ventana de impresión. Permite ventanas emergentes.");return}
+ win.document.write(`<html><head><title>${esc23(data.title)}</title><style>body{font-family:Arial;max-width:850px;margin:35px auto;line-height:1.55}h1{font-size:28px}h2{margin-top:25px;border-bottom:1px solid #bbb;padding-bottom:4px}@media print{body{margin:20mm}}</style></head><body><h1>${esc23(data.title)}</h1>${data.sections.map(s=>`<h2>${esc23(s[0])}</h2><p>${esc23(s[1]).replace(/\n/g,"<br>")}</p>`).join("")}
 <section id="pastoral" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🧭 Motor de Teología Pastoral y Aplicación</h2>
@@ -7887,95 +7449,8 @@ document.addEventListener('DOMContentLoaded', renderPastoral);
   </div>
 </section>
 
-<script>
-const TRAIN_DATA={
-  e21122:{
-    passage:"Efesios 2:11–22",
-    central:"Cristo reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo morada de Dios.",
-    competencies:[
-      ["Interpretación bíblica","Explicar el movimiento del pasaje: lejos → acercados → reconciliados → incorporados → edificados.","Identifica contexto, estructura y términos clave sin depender únicamente de aplicaciones."],
-      ["Teología","Relacionar reconciliación, cristología, eclesiología y pneumatología con el texto.","Formula una síntesis doctrinal respaldada por referencias bíblicas."],
-      ["Comunicación","Transformar la exégesis en una idea central enseñable.","Presenta una proposición clara, desarrollo lógico y conclusión."],
-      ["Pastoral","Aplicar la reconciliación a la vida comunitaria.","Propone acciones concretas sin separar la aplicación del sentido del texto."]
-    ],
-    practice:"Preparar una enseñanza de 20 minutos usando: contexto → explicación → doctrina → aplicación → oración.",
-    assessment:"Verificar: fidelidad al texto, claridad doctrinal, uso responsable de referencias, aplicación pertinente y capacidad de responder preguntas.",
-    reflection:"¿Puedo explicar primero lo que el texto dice, después lo que significa y finalmente cómo debe transformar nuestra vida?"
-  },
-  e2810:{
-    passage:"Efesios 2:8–10",
-    central:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-    competencies:[
-      ["Interpretación bíblica","Distinguir gracia, fe, salvación, obras y nueva creación dentro del argumento de Pablo.","Explica la relación entre los vv. 8–9 y el v. 10 sin oponer gracia y obediencia."],
-      ["Teología","Formular una síntesis equilibrada de soteriología y santificación.","Distingue fundamento de salvación y fruto de la salvación."],
-      ["Discipulado","Convertir la doctrina de la gracia en una práctica de obediencia agradecida.","Identifica una respuesta concreta sin convertirla en mérito."],
-      ["Comunicación","Explicar el pasaje a un nuevo creyente en lenguaje claro.","Evita tecnicismos innecesarios y conserva el contenido bíblico."]
-    ],
-    practice:"Crear una lección de 30 minutos titulada: «Salvos por gracia, creados para buenas obras».",
-    assessment:"Comprobar comprensión del contexto, precisión doctrinal, claridad y aplicación.",
-    reflection:"¿Cómo puedo enseñar la gracia sin producir pasividad espiritual ni legalismo?"
-  },
-  e21418:{
-    passage:"Efesios 2:14–18",
-    central:"Cristo es nuestra paz y por medio de Él tenemos acceso al Padre en un mismo Espíritu.",
-    competencies:[
-      ["Cristología","Explicar qué significa que Cristo sea «nuestra paz».","Relaciona persona y obra de Cristo con reconciliación."],
-      ["Pneumatología","Explicar el papel del Espíritu en el acceso al Padre.","Integra la dimensión trinitaria del v. 18."],
-      ["Eclesiología","Mostrar cómo la cruz afecta la unidad del pueblo de Dios.","Conecta reconciliación con comunidad."],
-      ["Predicación","Construir un sermón expositivo centrado en la obra de Cristo.","La aplicación surge del argumento del pasaje."]
-    ],
-    practice:"Preparar un bosquejo de tres movimientos: Cristo derriba la barrera → Cristo reconcilia → Cristo concede acceso.",
-    assessment:"Evaluar fidelidad textual, centralidad de Cristo, estructura y aplicación.",
-    reflection:"¿Mi predicación presenta a Cristo como el centro de la reconciliación o solamente habla de mejorar relaciones?"
-  }
-};
+<!-- Repaired: malformed legacy script omitted. -->
 
-function renderTraining(){
-  const d=TRAIN_DATA[document.getElementById('trainPassage').value];
-  const profile=document.getElementById('trainProfile').value;
-  const level=document.getElementById('trainLevel').value;
-  const levelText={basic:"Conceptos fundamentales y práctica guiada.",intermediate:"Integración de exégesis, doctrina y aplicación.",advanced:"Análisis crítico, síntesis teológica y práctica ministerial supervisada."}[level];
-  const profileText={
-    pastor:"orientado a preparación pastoral, enseñanza y acompañamiento",
-    leader:"orientado a liderazgo, servicio y formación de equipos",
-    disciple:"orientado a crecimiento espiritual y aplicación personal",
-    teacher:"orientado a planificación, explicación y evaluación de clases",
-    preacher:"orientado a exégesis, estructura homilética y proclamación"
-  }[profile];
-
-  document.getElementById('trainingOutput').innerHTML=
-    '<div class="card">'+
-      '<h3>🎯 Objetivo formativo</h3>'+
-      '<p><strong>Pasaje:</strong> '+d.passage+'</p>'+
-      '<p><strong>Idea central:</strong> '+d.central+'</p>'+
-      '<p><strong>Perfil:</strong> '+profileText+'</p>'+
-      '<p><strong>Nivel:</strong> '+levelText+'</p>'+
-    '</div>'+
-    '<h3 style="margin-top:18px">📚 Competencias</h3>'+
-    d.competencies.map((c,i)=>
-      '<div class="card" style="margin-bottom:10px">'+
-        '<h3>'+(i+1)+'. '+c[0]+'</h3>'+
-        '<p><strong>Competencia:</strong> '+c[1]+'</p>'+
-        '<p><strong>Evidencia esperada:</strong> '+c[2]+'</p>'+
-      '</div>'
-    ).join('')+
-    '<div class="card"><h3>🛠️ Práctica ministerial</h3><p>'+d.practice+'</p></div>'+
-    '<div class="card"><h3>✅ Evaluación</h3><p>'+d.assessment+'</p>'+
-      '<label>Autoevaluación: <select id="trainScore" onchange="saveTrainingScore()"><option value="">Seleccionar...</option><option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option></select></label>'+
-      '<p id="trainSaved" class="muted"></p></div>'+
-    '<div class="card"><h3>🪞 Pregunta de reflexión</h3><p>'+d.reflection+'</p></div>';
-  const saved=localStorage.getItem("EBP_TRAINING_SCORE_146_"+d.passage);
-  if(saved){document.getElementById('trainScore').value=saved;document.getElementById('trainSaved').textContent="Autoevaluación guardada localmente.";}
-}
-function saveTrainingScore(){
-  const d=TRAIN_DATA[document.getElementById('trainPassage').value];
-  const v=document.getElementById('trainScore').value;
-  if(v) localStorage.setItem("EBP_TRAINING_SCORE_146_"+d.passage,v);
-  const msg=document.getElementById('trainSaved');
-  if(msg) msg.textContent=v?"Autoevaluación guardada localmente.":"";
-}
-document.addEventListener('DOMContentLoaded',renderTraining);
-</script>
 
 
 <section id="discipleship" class="tab-panel" style="display:none">
@@ -8009,107 +7484,8 @@ document.addEventListener('DOMContentLoaded',renderTraining);
   </div>
 </section>
 
-<script>
-const DISC_DATA={
-  e21122:{
-    title:"Efesios 2:11–22 — Reconciliación e identidad",
-    goal:"Comprender la nueva identidad en Cristo y vivir la reconciliación como realidad del evangelio.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Puede explicar el contexto de Efesios 2:11–22 y seguir su argumento principal.","Explica el pasaje con sus propias palabras y utiliza referencias pertinentes."],
-      ["doctrine","Doctrina","Relaciona reconciliación, cristología, eclesiología y acceso al Padre.","Formula una síntesis doctrinal respaldada por el texto."],
-      ["character","Carácter","Manifiesta humildad, paciencia y disposición a reconciliar.","Reconoce una barrera relacional y responde bíblicamente."],
-      ["practice","Práctica espiritual","Integra oración y comunión con Dios como respuesta al acceso recibido en Cristo.","Mantiene una práctica intencional de oración y reflexión bíblica."],
-      ["service","Servicio","Participa activamente en la edificación de la comunidad cristiana.","Realiza una acción concreta de servicio o reconciliación."],
-      ["multiplication","Multiplicación","Puede transmitir el principio de reconciliación a otra persona.","Explica el pasaje o acompaña a otro discípulo en su aplicación."]
-    ]
-  },
-  e2810:{
-    title:"Efesios 2:8–10 — Gracia y buenas obras",
-    goal:"Comprender la relación entre gracia, fe, salvación y buenas obras, y vivir desde la gracia.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Explica la relación entre Efesios 2:8–9 y 2:10.","Distingue fundamento de salvación y fruto de salvación."],
-      ["doctrine","Doctrina","Distingue gracia de mérito y buenas obras de causa de salvación.","Expresa la doctrina sin caer en legalismo ni pasividad."],
-      ["character","Carácter","Cultiva gratitud y humildad.","Identifica actitudes de autosuficiencia y las confronta con la gracia."],
-      ["practice","Práctica espiritual","Responde a la gracia mediante obediencia y gratitud.","Registra una práctica concreta de obediencia."],
-      ["service","Servicio","Identifica las buenas obras como respuesta a la nueva vida.","Realiza una acción de servicio intencional."],
-      ["multiplication","Multiplicación","Puede enseñar a otro la diferencia entre mérito y fruto.","Explica Efesios 2:8–10 a un nuevo creyente."]
-    ]
-  },
-  e21418:{
-    title:"Efesios 2:14–18 — Cristo nuestra paz",
-    goal:"Comprender la obra reconciliadora de Cristo y reflejarla en la vida comunitaria.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Explica la secuencia paz → reconciliación → acceso.","Puede resumir el argumento de los vv. 14–18."],
-      ["doctrine","Doctrina","Integra cristología, soteriología, eclesiología y pneumatología.","Explica la dimensión trinitaria del v. 18."],
-      ["character","Carácter","Desarrolla disposición hacia el perdón y la reconciliación.","Da pasos concretos hacia una relación restaurada."],
-      ["practice","Práctica espiritual","Ora desde la realidad del acceso al Padre.","Mantiene una práctica de oración centrada en Cristo."],
-      ["service","Servicio","Contribuye a la unidad del cuerpo de Cristo.","Participa en una acción que fortalezca la comunión."],
-      ["multiplication","Multiplicación","Ayuda a otros a comprender la paz que Cristo produce.","Puede conducir una conversación bíblica sobre reconciliación."]
-    ]
-  }
-};
+<!-- Repaired: malformed legacy script omitted. -->
 
-function renderDiscipleship(){
-  const d=DISC_DATA[document.getElementById('discPassage').value];
-  const area=document.getElementById('discArea').value;
-  const stages=area==="all"?d.stages:d.stages.filter(x=>x[0]===area);
-  const key="EBP_DISC_147_"+d.title;
-  let saved={};
-  try{saved=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){saved={}}
-
-  document.getElementById('discOutput').innerHTML=
-    '<div class="card">'+
-      '<h3>🎯 Objetivo del proceso</h3>'+
-      '<p><strong>'+d.title+'</strong></p>'+
-      '<p>'+d.goal+'</p>'+
-      '<p><strong>Ruta de crecimiento:</strong> Verdad → Comprensión → Convicción → Práctica → Fruto → Multiplicación</p>'+
-    '</div>'+
-    stages.map((s,i)=>{
-      const val=saved[s[0]]||"";
-      return '<div class="card" style="margin-bottom:12px">'+
-        '<h3>'+(i+1)+'. '+s[1]+'</h3>'+
-        '<p><strong>Indicador:</strong> '+s[2]+'</p>'+
-        '<p><strong>Evidencia:</strong> '+s[3]+'</p>'+
-        '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
-      '</div>'
-    }).join('')+
-    '<div class="card">'+
-      '<h3>📝 Registro de acompañamiento</h3>'+
-      '<textarea id="discNotes" rows="5" style="width:100%" placeholder="Observaciones, próximos pasos, oración, acuerdos de acompañamiento...">'+(saved.notes||"")+'</textarea>'+
-      '<button onclick="saveDiscNotes()" style="margin-top:8px">💾 Guardar seguimiento</button>'+
-      '<span id="discMsg" class="muted" style="margin-left:8px"></span>'+
-    '</div>'+
-    '<div class="card">'+
-      '<h3>🪞 Preguntas de revisión</h3>'+
-      '<ul>'+
-        '<li>¿Qué verdad bíblica comprende ahora con mayor claridad?</li>'+
-        '<li>¿Qué convicción está produciendo esa verdad?</li>'+
-        '<li>¿Qué práctica concreta demuestra crecimiento?</li>'+
-        '<li>¿Qué próximo paso debe acompañarse?</li>'+
-        '<li>¿Está preparado para ayudar a otra persona a avanzar?</li>'+
-      '</ul>'+
-    '</div>';
-}
-function getDiscKey(){
-  return "EBP_DISC_147_"+DISC_DATA[document.getElementById('discPassage').value].title;
-}
-function saveDiscipleState(el){
-  const key=getDiscKey();
-  let obj={};
-  try{obj=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
-  obj[el.dataset.disc]=el.value;
-  localStorage.setItem(key,JSON.stringify(obj));
-}
-function saveDiscNotes(){
-  const key=getDiscKey();
-  let obj={};
-  try{obj=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
-  obj.notes=document.getElementById('discNotes').value;
-  localStorage.setItem(key,JSON.stringify(obj));
-  document.getElementById('discMsg').textContent="Seguimiento guardado localmente.";
-}
-document.addEventListener('DOMContentLoaded',renderDiscipleship);
-</script>
 
 
 <section id="courses" class="tab-panel" style="display:none">
@@ -8240,7 +7616,11 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
+    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
+      '<option value="">Pendiente</option>'+
+      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
+      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
+    '</select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -8635,99 +8015,7 @@ document.addEventListener('DOMContentLoaded',loadAuthoring);
   </div>
 </section>
 
-<script>
-const EXPORT_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  objective:"Comprender la reconciliación realizada por Cristo y vivirla en la comunión del pueblo de Dios.",
-  observations:"Pablo recuerda la antigua condición de los gentiles, presenta el acercamiento por medio de Cristo y termina con las imágenes de ciudadanía, familia y templo.",
-  words:"μακράν — lejos; ἐγγύς — cerca; εἰρήνη — paz; προσαγωγή — acceso; οἰκεῖοι — familia; ναός — templo.",
-  theology:"Cristología: Cristo es nuestra paz. Soteriología: Cristo reconcilia. Eclesiología: somos familia y edificio de Dios. Pneumatología: acceso al Padre en un mismo Espíritu.",
-  application:"Vivir desde la reconciliación, derribar barreras innecesarias, cultivar comunión y acercarnos a Dios con confianza.",
-  refs:"Isaías 57:19; Juan 10:16; Romanos 5:1–2; Gálatas 3:28; Colosenses 1:19–22; 1 Pedro 2:9–10."
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  objective:"Comprender la relación entre gracia, fe, salvación y obediencia.",
-  observations:"Los vv. 8–9 excluyen la jactancia y las obras como fundamento de salvación; el v. 10 presenta las buenas obras como fruto de la nueva creación.",
-  words:"χάρις — gracia; πίστις — fe; ποίημα — hechura/obra.",
-  theology:"Soteriología: salvación por gracia mediante la fe. Antropología: somos hechura de Dios. Santificación: somos creados para buenas obras.",
-  application:"Descansar en la gracia y responder con obediencia, servicio y gratitud.",
-  refs:"Romanos 3:23–28; Tito 2:11–14; Tito 3:5; 2 Corintios 5:17."
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  objective:"Comprender la dimensión cristológica, comunitaria y trinitaria de la reconciliación.",
-  observations:"Cristo es presentado como nuestra paz; su obra afecta la separación entre grupos y culmina en acceso al Padre.",
-  words:"εἰρήνη — paz; καταργέω — abolir/anular; ἀποκαταλλάσσω — reconciliar; προσαγωγή — acceso.",
-  theology:"Cristología: Cristo realiza la paz. Soteriología: reconciliación. Eclesiología: unidad. Pneumatología: acceso al Padre en el Espíritu.",
-  application:"Buscar reconciliación, proteger la unidad y vivir una oración confiada delante del Padre.",
-  refs:"Romanos 5:1–2; Colosenses 1:20–22; Efesios 4:1–6; 1 Corintios 12:13."
- }
-};
-
-function exportData(){return EXPORT_DATA[document.getElementById('expStudy').value];}
-function exportText(){
- const d=exportData(), f=document.getElementById('expFormat').value;
- let title=d.title;
- let out=title+"\n\nPASaje: "+d.text+"\n\nIDEA CENTRAL\n"+d.idea+"\n\nOBJETIVO\n"+d.objective+"\n\nOBSERVACIONES\n"+d.observations+"\n\nGRIEGO/HEBREO\n"+d.words+"\n\nTEOLOGÍA\n"+d.theology+"\n\nAPLICACIÓN\n"+d.application+"\n\nREFERENCIAS\n"+d.refs;
- if(f==="outline") out=title+"\n\nTEXTO: "+d.text+"\n\n1. INTRODUCCIÓN\nPresentar la tensión del pasaje.\n\n2. DESARROLLO\nA. Observación\n"+d.observations+"\n\nB. Teología\n"+d.theology+"\n\nC. Aplicación\n"+d.application+"\n\n3. CONCLUSIÓN\nRepetir la idea central y conducir a una respuesta.";
- if(f==="teacher") out=title+"\n\nGUÍA DEL MAESTRO\n\nObjetivo: "+d.objective+"\n\nTexto: "+d.text+"\n\nObservación: "+d.observations+"\n\nPreguntas:\n¿Qué dice el texto?\n¿Qué significa?\n¿Qué revela acerca de Dios?\n¿Cómo debemos responder?\n\nTeología: "+d.theology+"\n\nAplicación: "+d.application+"\n\nReferencias: "+d.refs;
- if(f==="sermon") out=title+"\n\nSERMÓN EXPOSITIVO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nI. EL CONTEXTO Y LA NECESIDAD\n"+d.observations+"\n\nII. LA OBRA DE CRISTO\n"+d.theology+"\n\nIII. NUESTRA RESPUESTA\n"+d.application+"\n\nCONCLUSIÓN\nReafirmar la idea central y llamar a una respuesta bíblica.";
- if(f==="student") out=title+"\n\nHOJA DEL ALUMNO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nMis observaciones:\n1. __________________________\n2. __________________________\n3. __________________________\n\n¿Qué aprendí acerca de Dios?\n____________________________\n\n¿Cómo responderé?\n"+d.application+"\n\nOración:\n____________________________";
- return out;
-}
-function renderExportPreview(){
- const d=exportData();
- document.getElementById('exportPreview').innerHTML=
-  '<h3>👁️ Vista previa</h3>'+
-  '<h2>'+d.title+'</h2>'+
-  '<p><strong>Texto:</strong> '+d.text+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Objetivo:</strong> '+d.objective+'</p>'+
-  '<p><strong>Teología:</strong> '+d.theology+'</p>'+
-  '<p><strong>Aplicación:</strong> '+d.application+'</p>'+
-  '<p><strong>Referencias:</strong> '+d.refs+'</p>';
-}
-function downloadBlob(content,name,type){
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([content],{type:type}));
- a.download=name;
- a.click();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function downloadExportText(){
- const d=exportData();
- downloadBlob(exportText(),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".txt","text/plain;charset=utf-8");
- document.getElementById('exportMsg').textContent="TXT generado.";
-}
-function downloadExportJSON(){
- const d=exportData();
- downloadBlob(JSON.stringify(d,null,2),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".json","application/json;charset=utf-8");
- document.getElementById('exportMsg').textContent="JSON generado.";
-}
-function copyExport(){
- navigator.clipboard.writeText(exportText()).then(()=>{
-  document.getElementById('exportMsg').textContent="Contenido copiado al portapapeles.";
- }).catch(()=>{
-  document.getElementById('exportMsg').textContent="No fue posible acceder al portapapeles desde este navegador.";
- });
-}
-function printExport(){
- const d=exportData(),w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
- w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -8768,112 +8056,7 @@ function printExport(){
     <p id="slidesMsg" class="muted"></p>
   </div>
 </section>
-
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -8914,81 +8097,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 </body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -9161,111 +8269,8 @@ document.addEventListener('DOMContentLoaded',renderExportPreview);
   </div>
 </section>
 
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -9306,81 +8311,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 </body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -9641,95 +8571,8 @@ document.addEventListener('DOMContentLoaded', renderPastoral);
   </div>
 </section>
 
-<script>
-const TRAIN_DATA={
-  e21122:{
-    passage:"Efesios 2:11–22",
-    central:"Cristo reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo morada de Dios.",
-    competencies:[
-      ["Interpretación bíblica","Explicar el movimiento del pasaje: lejos → acercados → reconciliados → incorporados → edificados.","Identifica contexto, estructura y términos clave sin depender únicamente de aplicaciones."],
-      ["Teología","Relacionar reconciliación, cristología, eclesiología y pneumatología con el texto.","Formula una síntesis doctrinal respaldada por referencias bíblicas."],
-      ["Comunicación","Transformar la exégesis en una idea central enseñable.","Presenta una proposición clara, desarrollo lógico y conclusión."],
-      ["Pastoral","Aplicar la reconciliación a la vida comunitaria.","Propone acciones concretas sin separar la aplicación del sentido del texto."]
-    ],
-    practice:"Preparar una enseñanza de 20 minutos usando: contexto → explicación → doctrina → aplicación → oración.",
-    assessment:"Verificar: fidelidad al texto, claridad doctrinal, uso responsable de referencias, aplicación pertinente y capacidad de responder preguntas.",
-    reflection:"¿Puedo explicar primero lo que el texto dice, después lo que significa y finalmente cómo debe transformar nuestra vida?"
-  },
-  e2810:{
-    passage:"Efesios 2:8–10",
-    central:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-    competencies:[
-      ["Interpretación bíblica","Distinguir gracia, fe, salvación, obras y nueva creación dentro del argumento de Pablo.","Explica la relación entre los vv. 8–9 y el v. 10 sin oponer gracia y obediencia."],
-      ["Teología","Formular una síntesis equilibrada de soteriología y santificación.","Distingue fundamento de salvación y fruto de la salvación."],
-      ["Discipulado","Convertir la doctrina de la gracia en una práctica de obediencia agradecida.","Identifica una respuesta concreta sin convertirla en mérito."],
-      ["Comunicación","Explicar el pasaje a un nuevo creyente en lenguaje claro.","Evita tecnicismos innecesarios y conserva el contenido bíblico."]
-    ],
-    practice:"Crear una lección de 30 minutos titulada: «Salvos por gracia, creados para buenas obras».",
-    assessment:"Comprobar comprensión del contexto, precisión doctrinal, claridad y aplicación.",
-    reflection:"¿Cómo puedo enseñar la gracia sin producir pasividad espiritual ni legalismo?"
-  },
-  e21418:{
-    passage:"Efesios 2:14–18",
-    central:"Cristo es nuestra paz y por medio de Él tenemos acceso al Padre en un mismo Espíritu.",
-    competencies:[
-      ["Cristología","Explicar qué significa que Cristo sea «nuestra paz».","Relaciona persona y obra de Cristo con reconciliación."],
-      ["Pneumatología","Explicar el papel del Espíritu en el acceso al Padre.","Integra la dimensión trinitaria del v. 18."],
-      ["Eclesiología","Mostrar cómo la cruz afecta la unidad del pueblo de Dios.","Conecta reconciliación con comunidad."],
-      ["Predicación","Construir un sermón expositivo centrado en la obra de Cristo.","La aplicación surge del argumento del pasaje."]
-    ],
-    practice:"Preparar un bosquejo de tres movimientos: Cristo derriba la barrera → Cristo reconcilia → Cristo concede acceso.",
-    assessment:"Evaluar fidelidad textual, centralidad de Cristo, estructura y aplicación.",
-    reflection:"¿Mi predicación presenta a Cristo como el centro de la reconciliación o solamente habla de mejorar relaciones?"
-  }
-};
+<!-- Repaired: malformed legacy script omitted. -->
 
-function renderTraining(){
-  const d=TRAIN_DATA[document.getElementById('trainPassage').value];
-  const profile=document.getElementById('trainProfile').value;
-  const level=document.getElementById('trainLevel').value;
-  const levelText={basic:"Conceptos fundamentales y práctica guiada.",intermediate:"Integración de exégesis, doctrina y aplicación.",advanced:"Análisis crítico, síntesis teológica y práctica ministerial supervisada."}[level];
-  const profileText={
-    pastor:"orientado a preparación pastoral, enseñanza y acompañamiento",
-    leader:"orientado a liderazgo, servicio y formación de equipos",
-    disciple:"orientado a crecimiento espiritual y aplicación personal",
-    teacher:"orientado a planificación, explicación y evaluación de clases",
-    preacher:"orientado a exégesis, estructura homilética y proclamación"
-  }[profile];
-
-  document.getElementById('trainingOutput').innerHTML=
-    '<div class="card">'+
-      '<h3>🎯 Objetivo formativo</h3>'+
-      '<p><strong>Pasaje:</strong> '+d.passage+'</p>'+
-      '<p><strong>Idea central:</strong> '+d.central+'</p>'+
-      '<p><strong>Perfil:</strong> '+profileText+'</p>'+
-      '<p><strong>Nivel:</strong> '+levelText+'</p>'+
-    '</div>'+
-    '<h3 style="margin-top:18px">📚 Competencias</h3>'+
-    d.competencies.map((c,i)=>
-      '<div class="card" style="margin-bottom:10px">'+
-        '<h3>'+(i+1)+'. '+c[0]+'</h3>'+
-        '<p><strong>Competencia:</strong> '+c[1]+'</p>'+
-        '<p><strong>Evidencia esperada:</strong> '+c[2]+'</p>'+
-      '</div>'
-    ).join('')+
-    '<div class="card"><h3>🛠️ Práctica ministerial</h3><p>'+d.practice+'</p></div>'+
-    '<div class="card"><h3>✅ Evaluación</h3><p>'+d.assessment+'</p>'+
-      '<label>Autoevaluación: <select id="trainScore" onchange="saveTrainingScore()"><option value="">Seleccionar...</option><option>Inicial</option><option>En desarrollo</option><option>Competente</option><option>Listo para enseñar</option></select></label>'+
-      '<p id="trainSaved" class="muted"></p></div>'+
-    '<div class="card"><h3>🪞 Pregunta de reflexión</h3><p>'+d.reflection+'</p></div>';
-  const saved=localStorage.getItem("EBP_TRAINING_SCORE_146_"+d.passage);
-  if(saved){document.getElementById('trainScore').value=saved;document.getElementById('trainSaved').textContent="Autoevaluación guardada localmente.";}
-}
-function saveTrainingScore(){
-  const d=TRAIN_DATA[document.getElementById('trainPassage').value];
-  const v=document.getElementById('trainScore').value;
-  if(v) localStorage.setItem("EBP_TRAINING_SCORE_146_"+d.passage,v);
-  const msg=document.getElementById('trainSaved');
-  if(msg) msg.textContent=v?"Autoevaluación guardada localmente.":"";
-}
-document.addEventListener('DOMContentLoaded',renderTraining);
-</script>
 
 
 <section id="discipleship" class="tab-panel" style="display:none">
@@ -9763,107 +8606,8 @@ document.addEventListener('DOMContentLoaded',renderTraining);
   </div>
 </section>
 
-<script>
-const DISC_DATA={
-  e21122:{
-    title:"Efesios 2:11–22 — Reconciliación e identidad",
-    goal:"Comprender la nueva identidad en Cristo y vivir la reconciliación como realidad del evangelio.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Puede explicar el contexto de Efesios 2:11–22 y seguir su argumento principal.","Explica el pasaje con sus propias palabras y utiliza referencias pertinentes."],
-      ["doctrine","Doctrina","Relaciona reconciliación, cristología, eclesiología y acceso al Padre.","Formula una síntesis doctrinal respaldada por el texto."],
-      ["character","Carácter","Manifiesta humildad, paciencia y disposición a reconciliar.","Reconoce una barrera relacional y responde bíblicamente."],
-      ["practice","Práctica espiritual","Integra oración y comunión con Dios como respuesta al acceso recibido en Cristo.","Mantiene una práctica intencional de oración y reflexión bíblica."],
-      ["service","Servicio","Participa activamente en la edificación de la comunidad cristiana.","Realiza una acción concreta de servicio o reconciliación."],
-      ["multiplication","Multiplicación","Puede transmitir el principio de reconciliación a otra persona.","Explica el pasaje o acompaña a otro discípulo en su aplicación."]
-    ]
-  },
-  e2810:{
-    title:"Efesios 2:8–10 — Gracia y buenas obras",
-    goal:"Comprender la relación entre gracia, fe, salvación y buenas obras, y vivir desde la gracia.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Explica la relación entre Efesios 2:8–9 y 2:10.","Distingue fundamento de salvación y fruto de salvación."],
-      ["doctrine","Doctrina","Distingue gracia de mérito y buenas obras de causa de salvación.","Expresa la doctrina sin caer en legalismo ni pasividad."],
-      ["character","Carácter","Cultiva gratitud y humildad.","Identifica actitudes de autosuficiencia y las confronta con la gracia."],
-      ["practice","Práctica espiritual","Responde a la gracia mediante obediencia y gratitud.","Registra una práctica concreta de obediencia."],
-      ["service","Servicio","Identifica las buenas obras como respuesta a la nueva vida.","Realiza una acción de servicio intencional."],
-      ["multiplication","Multiplicación","Puede enseñar a otro la diferencia entre mérito y fruto.","Explica Efesios 2:8–10 a un nuevo creyente."]
-    ]
-  },
-  e21418:{
-    title:"Efesios 2:14–18 — Cristo nuestra paz",
-    goal:"Comprender la obra reconciliadora de Cristo y reflejarla en la vida comunitaria.",
-    stages:[
-      ["biblical","Conocimiento bíblico","Explica la secuencia paz → reconciliación → acceso.","Puede resumir el argumento de los vv. 14–18."],
-      ["doctrine","Doctrina","Integra cristología, soteriología, eclesiología y pneumatología.","Explica la dimensión trinitaria del v. 18."],
-      ["character","Carácter","Desarrolla disposición hacia el perdón y la reconciliación.","Da pasos concretos hacia una relación restaurada."],
-      ["practice","Práctica espiritual","Ora desde la realidad del acceso al Padre.","Mantiene una práctica de oración centrada en Cristo."],
-      ["service","Servicio","Contribuye a la unidad del cuerpo de Cristo.","Participa en una acción que fortalezca la comunión."],
-      ["multiplication","Multiplicación","Ayuda a otros a comprender la paz que Cristo produce.","Puede conducir una conversación bíblica sobre reconciliación."]
-    ]
-  }
-};
+<!-- Repaired: malformed legacy script omitted. -->
 
-function renderDiscipleship(){
-  const d=DISC_DATA[document.getElementById('discPassage').value];
-  const area=document.getElementById('discArea').value;
-  const stages=area==="all"?d.stages:d.stages.filter(x=>x[0]===area);
-  const key="EBP_DISC_147_"+d.title;
-  let saved={};
-  try{saved=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){saved={}}
-
-  document.getElementById('discOutput').innerHTML=
-    '<div class="card">'+
-      '<h3>🎯 Objetivo del proceso</h3>'+
-      '<p><strong>'+d.title+'</strong></p>'+
-      '<p>'+d.goal+'</p>'+
-      '<p><strong>Ruta de crecimiento:</strong> Verdad → Comprensión → Convicción → Práctica → Fruto → Multiplicación</p>'+
-    '</div>'+
-    stages.map((s,i)=>{
-      const val=saved[s[0]]||"";
-      return '<div class="card" style="margin-bottom:12px">'+
-        '<h3>'+(i+1)+'. '+s[1]+'</h3>'+
-        '<p><strong>Indicador:</strong> '+s[2]+'</p>'+
-        '<p><strong>Evidencia:</strong> '+s[3]+'</p>'+
-        '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
-      '</div>'
-    }).join('')+
-    '<div class="card">'+
-      '<h3>📝 Registro de acompañamiento</h3>'+
-      '<textarea id="discNotes" rows="5" style="width:100%" placeholder="Observaciones, próximos pasos, oración, acuerdos de acompañamiento...">'+(saved.notes||"")+'</textarea>'+
-      '<button onclick="saveDiscNotes()" style="margin-top:8px">💾 Guardar seguimiento</button>'+
-      '<span id="discMsg" class="muted" style="margin-left:8px"></span>'+
-    '</div>'+
-    '<div class="card">'+
-      '<h3>🪞 Preguntas de revisión</h3>'+
-      '<ul>'+
-        '<li>¿Qué verdad bíblica comprende ahora con mayor claridad?</li>'+
-        '<li>¿Qué convicción está produciendo esa verdad?</li>'+
-        '<li>¿Qué práctica concreta demuestra crecimiento?</li>'+
-        '<li>¿Qué próximo paso debe acompañarse?</li>'+
-        '<li>¿Está preparado para ayudar a otra persona a avanzar?</li>'+
-      '</ul>'+
-    '</div>';
-}
-function getDiscKey(){
-  return "EBP_DISC_147_"+DISC_DATA[document.getElementById('discPassage').value].title;
-}
-function saveDiscipleState(el){
-  const key=getDiscKey();
-  let obj={};
-  try{obj=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
-  obj[el.dataset.disc]=el.value;
-  localStorage.setItem(key,JSON.stringify(obj));
-}
-function saveDiscNotes(){
-  const key=getDiscKey();
-  let obj={};
-  try{obj=JSON.parse(localStorage.getItem(key)||"{}")}catch(e){}
-  obj.notes=document.getElementById('discNotes').value;
-  localStorage.setItem(key,JSON.stringify(obj));
-  document.getElementById('discMsg').textContent="Seguimiento guardado localmente.";
-}
-document.addEventListener('DOMContentLoaded',renderDiscipleship);
-</script>
 
 
 <section id="courses" class="tab-panel" style="display:none">
@@ -9994,7 +8738,11 @@ function renderCourse(){
     '<h3>'+m[0]+'. '+m[1]+'</h3>'+
     '<p><strong>Base:</strong> '+m[2]+'</p>'+
     '<p><strong>Resultado esperado:</strong> '+m[3]+'</p>'+
-    '<label>Estado <select data-disc="'+s[0]+'" onchange="saveDiscipleState(this)"><option value="">Sin registrar</option><option '+(val==="inicial"?"selected":"")+' value="inicial">Inicial</option><option '+(val==="proceso"?"selected":"")+' value="proceso">En proceso</option><option '+(val==="logrado"?"selected":"")+' value="logrado">Logrado</option><option '+(val==="multiplica"?"selected":"")+' value="multiplica">Puede multiplicar</option></select></label>'+
+    '<label>Estado <select data-course="'+m[0]+'" onchange="saveCourseState(this)">'+
+      '<option value="">Pendiente</option>'+
+      '<option '+(st==="in_progress"?"selected":"")+' value="in_progress">En proceso</option>'+
+      '<option '+(st==="completed"?"selected":"")+' value="completed">Completada</option>'+
+    '</select></label>'+
     '<details style="margin-top:8px"><summary>📝 Plan de sesión</summary>'+
       '<p><strong>0–10 min:</strong> oración, objetivo y activación de conocimientos previos.</p>'+
       '<p><strong>10–'+Math.round(mins*0.65)+' min:</strong> exposición bíblica, observación y diálogo.</p>'+
@@ -10389,99 +9137,7 @@ document.addEventListener('DOMContentLoaded',loadAuthoring);
   </div>
 </section>
 
-<script>
-const EXPORT_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  objective:"Comprender la reconciliación realizada por Cristo y vivirla en la comunión del pueblo de Dios.",
-  observations:"Pablo recuerda la antigua condición de los gentiles, presenta el acercamiento por medio de Cristo y termina con las imágenes de ciudadanía, familia y templo.",
-  words:"μακράν — lejos; ἐγγύς — cerca; εἰρήνη — paz; προσαγωγή — acceso; οἰκεῖοι — familia; ναός — templo.",
-  theology:"Cristología: Cristo es nuestra paz. Soteriología: Cristo reconcilia. Eclesiología: somos familia y edificio de Dios. Pneumatología: acceso al Padre en un mismo Espíritu.",
-  application:"Vivir desde la reconciliación, derribar barreras innecesarias, cultivar comunión y acercarnos a Dios con confianza.",
-  refs:"Isaías 57:19; Juan 10:16; Romanos 5:1–2; Gálatas 3:28; Colosenses 1:19–22; 1 Pedro 2:9–10."
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  objective:"Comprender la relación entre gracia, fe, salvación y obediencia.",
-  observations:"Los vv. 8–9 excluyen la jactancia y las obras como fundamento de salvación; el v. 10 presenta las buenas obras como fruto de la nueva creación.",
-  words:"χάρις — gracia; πίστις — fe; ποίημα — hechura/obra.",
-  theology:"Soteriología: salvación por gracia mediante la fe. Antropología: somos hechura de Dios. Santificación: somos creados para buenas obras.",
-  application:"Descansar en la gracia y responder con obediencia, servicio y gratitud.",
-  refs:"Romanos 3:23–28; Tito 2:11–14; Tito 3:5; 2 Corintios 5:17."
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  objective:"Comprender la dimensión cristológica, comunitaria y trinitaria de la reconciliación.",
-  observations:"Cristo es presentado como nuestra paz; su obra afecta la separación entre grupos y culmina en acceso al Padre.",
-  words:"εἰρήνη — paz; καταργέω — abolir/anular; ἀποκαταλλάσσω — reconciliar; προσαγωγή — acceso.",
-  theology:"Cristología: Cristo realiza la paz. Soteriología: reconciliación. Eclesiología: unidad. Pneumatología: acceso al Padre en el Espíritu.",
-  application:"Buscar reconciliación, proteger la unidad y vivir una oración confiada delante del Padre.",
-  refs:"Romanos 5:1–2; Colosenses 1:20–22; Efesios 4:1–6; 1 Corintios 12:13."
- }
-};
-
-function exportData(){return EXPORT_DATA[document.getElementById('expStudy').value];}
-function exportText(){
- const d=exportData(), f=document.getElementById('expFormat').value;
- let title=d.title;
- let out=title+"\n\nPASaje: "+d.text+"\n\nIDEA CENTRAL\n"+d.idea+"\n\nOBJETIVO\n"+d.objective+"\n\nOBSERVACIONES\n"+d.observations+"\n\nGRIEGO/HEBREO\n"+d.words+"\n\nTEOLOGÍA\n"+d.theology+"\n\nAPLICACIÓN\n"+d.application+"\n\nREFERENCIAS\n"+d.refs;
- if(f==="outline") out=title+"\n\nTEXTO: "+d.text+"\n\n1. INTRODUCCIÓN\nPresentar la tensión del pasaje.\n\n2. DESARROLLO\nA. Observación\n"+d.observations+"\n\nB. Teología\n"+d.theology+"\n\nC. Aplicación\n"+d.application+"\n\n3. CONCLUSIÓN\nRepetir la idea central y conducir a una respuesta.";
- if(f==="teacher") out=title+"\n\nGUÍA DEL MAESTRO\n\nObjetivo: "+d.objective+"\n\nTexto: "+d.text+"\n\nObservación: "+d.observations+"\n\nPreguntas:\n¿Qué dice el texto?\n¿Qué significa?\n¿Qué revela acerca de Dios?\n¿Cómo debemos responder?\n\nTeología: "+d.theology+"\n\nAplicación: "+d.application+"\n\nReferencias: "+d.refs;
- if(f==="sermon") out=title+"\n\nSERMÓN EXPOSITIVO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nI. EL CONTEXTO Y LA NECESIDAD\n"+d.observations+"\n\nII. LA OBRA DE CRISTO\n"+d.theology+"\n\nIII. NUESTRA RESPUESTA\n"+d.application+"\n\nCONCLUSIÓN\nReafirmar la idea central y llamar a una respuesta bíblica.";
- if(f==="student") out=title+"\n\nHOJA DEL ALUMNO\n\nTexto: "+d.text+"\n\nIdea central: "+d.idea+"\n\nMis observaciones:\n1. __________________________\n2. __________________________\n3. __________________________\n\n¿Qué aprendí acerca de Dios?\n____________________________\n\n¿Cómo responderé?\n"+d.application+"\n\nOración:\n____________________________";
- return out;
-}
-function renderExportPreview(){
- const d=exportData();
- document.getElementById('exportPreview').innerHTML=
-  '<h3>👁️ Vista previa</h3>'+
-  '<h2>'+d.title+'</h2>'+
-  '<p><strong>Texto:</strong> '+d.text+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Objetivo:</strong> '+d.objective+'</p>'+
-  '<p><strong>Teología:</strong> '+d.theology+'</p>'+
-  '<p><strong>Aplicación:</strong> '+d.application+'</p>'+
-  '<p><strong>Referencias:</strong> '+d.refs+'</p>';
-}
-function downloadBlob(content,name,type){
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([content],{type:type}));
- a.download=name;
- a.click();
- setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function downloadExportText(){
- const d=exportData();
- downloadBlob(exportText(),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".txt","text/plain;charset=utf-8");
- document.getElementById('exportMsg').textContent="TXT generado.";
-}
-function downloadExportJSON(){
- const d=exportData();
- downloadBlob(JSON.stringify(d,null,2),d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+".json","application/json;charset=utf-8");
- document.getElementById('exportMsg').textContent="JSON generado.";
-}
-function copyExport(){
- navigator.clipboard.writeText(exportText()).then(()=>{
-  document.getElementById('exportMsg').textContent="Contenido copiado al portapapeles.";
- }).catch(()=>{
-  document.getElementById('exportMsg').textContent="No fue posible acceder al portapapeles desde este navegador.";
- });
-}
-function printExport(){
- const d=exportData(),w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const html='<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:40px auto;line-height:1.6}h1,h2{color:#222}.box{padding:14px;border:1px solid #ccc;border-radius:8px}</style></head><body><h1>'+d.title+'</h1><div class="box">'+exportText().replace(/\n/g,"<br>")+'</div></body></html>';
- w.document.write(html);w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
 <section id="slides" class="tab-panel" style="display:none">
   <div class="card">
     <h2>🖥️ Motor de Presentaciones</h2>
@@ -10522,112 +9178,7 @@ function printExport(){
     <p id="slidesMsg" class="muted"></p>
   </div>
 </section>
-
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -10668,81 +9219,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 </body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -10915,111 +9391,8 @@ document.addEventListener('DOMContentLoaded',renderExportPreview);
   </div>
 </section>
 
-<script>
-const SLIDE_DATA={
- e21122:{
-  title:"De lejos a la presencia de Dios",
-  text:"Efesios 2:11–22",
-  idea:"En Cristo, Dios reconcilia a los que estaban lejos, crea una nueva humanidad y hace de su pueblo su morada.",
-  phrase:"Cristo no solamente nos acercó a Dios; también nos hizo parte de una nueva familia.",
-  slides:[
-   ["1","Portada","De lejos a la presencia de Dios","Efesios 2:11–22","Presentar el tema y leer el pasaje."],
-   ["2","La antigua condición","Estaban lejos","Efesios 2:11–12","Recordar identidad, separación y falta de esperanza sin Cristo."],
-   ["3","Pero ahora en Cristo","Los que estaban lejos han sido acercados","Efesios 2:13","Enfatizar el giro del texto: «pero ahora»."],
-   ["4","Cristo es nuestra paz","Él mismo es nuestra paz","Efesios 2:14","La paz no es solamente una idea: está centrada en la persona de Cristo."],
-   ["5","Cristo derriba la barrera","Una nueva humanidad","Efesios 2:14–16","Mostrar cómo la cruz afecta la hostilidad y la reconciliación."],
-   ["6","Tenemos acceso al Padre","Por medio de Cristo, en un mismo Espíritu","Efesios 2:18","Conectar cristología, pneumatología y acceso al Padre."],
-   ["7","Ya no somos extranjeros","Ciudadanos y familia de Dios","Efesios 2:19","La salvación incluye pertenencia."],
-   ["8","Somos edificados","Cristo es la piedra angular","Efesios 2:20–22","La iglesia como edificio y morada de Dios."],
-   ["9","Aplicación","Vivir la reconciliación","Efesios 4:1–3","Pasar de doctrina a práctica comunitaria."],
-   ["10","Conclusión","De lejos → cerca → familia → morada","Efesios 2:13–22","Repetir la idea central y llamar a una respuesta."]
-  ]
- },
- e2810:{
-  title:"Salvos por gracia, creados para buenas obras",
-  text:"Efesios 2:8–10",
-  idea:"La salvación es por gracia mediante la fe y produce una nueva vida destinada a buenas obras.",
-  phrase:"Las buenas obras no compran la salvación; son fruto de la salvación.",
-  slides:[
-   ["1","Portada","Salvos por gracia, creados para buenas obras","Efesios 2:8–10","Presentar el tema."],
-   ["2","Por gracia","La salvación nace de la gracia","Efesios 2:8","Definir gracia como favor inmerecido y acción salvadora de Dios."],
-   ["3","Mediante la fe","La fe recibe lo que Dios ofrece","Efesios 2:8","Distinguir fe de mérito."],
-   ["4","No por obras","La salvación excluye la jactancia","Efesios 2:9","La obra humana no es fundamento de salvación."],
-   ["5","Somos hechura de Dios","Nueva creación","Efesios 2:10","La identidad procede de la obra de Dios."],
-   ["6","Para buenas obras","La gracia produce obediencia","Efesios 2:10","Conectar gracia y vida transformada."],
-   ["7","Equilibrio bíblico","Ni legalismo ni pasividad","Efesios 2:8–10","Mostrar el flujo gracia → fe → nueva vida → obras."],
-   ["8","Aplicación","Vivir desde la gracia","Tito 2:11–14","Responder con obediencia y gratitud."],
-   ["9","Conclusión","Gracia que salva y transforma","Efesios 2:8–10","Reafirmar la idea central."]
-  ]
- },
- e21418:{
-  title:"Cristo es nuestra paz",
-  text:"Efesios 2:14–18",
-  idea:"Cristo es nuestra paz: derriba la hostilidad, reconcilia y concede acceso al Padre por un mismo Espíritu.",
-  phrase:"La paz cristiana tiene un nombre: Jesucristo.",
-  slides:[
-   ["1","Portada","Cristo es nuestra paz","Efesios 2:14–18","Presentar el pasaje."],
-   ["2","Cristo mismo","Él es nuestra paz","Efesios 2:14","La paz comienza en Cristo."],
-   ["3","Derriba la hostilidad","Una nueva humanidad","Efesios 2:14–15","Explicar la obra reconciliadora."],
-   ["4","Por medio de la cruz","Reconciliación","Efesios 2:16","La cruz aborda la enemistad."],
-   ["5","Anunció paz","A los que estaban lejos y cerca","Efesios 2:17","La paz alcanza a ambos."],
-   ["6","Un mismo acceso","Al Padre en un mismo Espíritu","Efesios 2:18","Dimensión trinitaria."],
-   ["7","Aplicación personal","¿Dónde necesito reconciliación?","Efesios 4:1–3","Aplicar la verdad al carácter y relaciones."],
-   ["8","Aplicación congregacional","Proteger la unidad","Efesios 4:4–6","Unidad sin uniformidad."],
-   ["9","Conclusión","Cristo es nuestra paz","Efesios 2:14","Llamado a vivir la reconciliación."]
-  ]
- }
-};
-
-function renderSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const type=document.getElementById('slideType').value;
- const style=document.getElementById('slideStyle').value;
- const typeName={sermon:"Predicación",class:"Clase bíblica",seminar:"Seminario avanzado",discipleship:"Discipulado"}[type];
- const styleNote={premium:"Tipografía grande, frases clave y énfasis visual.",academic:"Mayor densidad de referencias y notas.",minimal:"Una idea principal por diapositiva, poco texto."}[style];
-
- document.getElementById('slidesOutput').innerHTML=
-  '<div class="card"><h3>🎬 '+d.title+'</h3>'+
-  '<p><strong>Tipo:</strong> '+typeName+' · <strong>Estilo:</strong> '+styleNote+'</p>'+
-  '<p><strong>Idea central:</strong> '+d.idea+'</p>'+
-  '<p><strong>Frase de impacto:</strong> “'+d.phrase+'”</p></div>'+
-  d.slides.map(s=>
-   '<div class="card" style="margin-bottom:10px">'+
-    '<h3>Diapositiva '+s[0]+' — '+s[1]+'</h3>'+
-    '<p style="font-size:1.2em"><strong>'+s[2]+'</strong></p>'+
-    '<p><strong>Referencia:</strong> '+s[3]+'</p>'+
-    '<p><strong>Notas del expositor:</strong> '+s[4]+'</p>'+
-    '<p class="muted">Visual sugerido: '+(style==="academic"?"diagrama o texto bíblico con referencias.":style==="minimal"?"una imagen o palabra clave dominante.":"imagen horizontal 16:9 + frase clave + referencia.")+'</p>'+
-   '</div>'
-  ).join('');
-}
-function slideText(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- return d.title+"\\n"+d.text+"\\n\\nIDEA CENTRAL\\n"+d.idea+"\\n\\nFRASE DE IMPACTO\\n"+d.phrase+"\\n\\n"+
- d.slides.map(s=>"DIAPOSITIVA "+s[0]+" — "+s[1]+"\\n"+s[2]+"\\n"+s[3]+"\\nNotas: "+s[4]).join("\\n\\n");
-}
-function downloadSlidesOutline(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value];
- const a=document.createElement('a');
- a.href=URL.createObjectURL(new Blob([slideText()],{type:"text/plain;charset=utf-8"}));
- a.download=d.title.replace(/[^\wáéíóúñÁÉÍÓÚÑ -]/g,"")+"_presentacion.txt";
- a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
- document.getElementById('slidesMsg').textContent="Esquema de presentación generado.";
-}
-function copySlides(){
- navigator.clipboard.writeText(slideText()).then(()=>{
-  document.getElementById('slidesMsg').textContent="Presentación copiada al portapapeles.";
- });
-}
-function printSlides(){
- const d=SLIDE_DATA[document.getElementById('slideStudy').value],w=window.open("","_blank");
- if(!w){alert("Permite ventanas emergentes para imprimir.");return;}
- const cards=d.slides.map(x=>'<section style="page-break-after:always;padding:45px"><h1>'+x[0]+'. '+x[1]+'</h1><h2>'+x[2]+'</h2><p><b>Referencia:</b> '+x[3]+'</p><hr><p><b>Notas:</b> '+x[4]+'</p></section>').join('');
- w.document.write('<html><head><title>'+d.title+'</title><style>body{font-family:Arial,sans-serif}h1{font-size:34px}h2{font-size:26px}</style></head><body>'+cards+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300);
-}
-</script>
-
-
+<!-- Repaired: malformed legacy script omitted. -->
+<section style="page-break-after:always;padding:45px"><h1>'+s[0]+'. '+s[1]+'</h1><h2>'+s[2]+'</h2><p><b>Referencia:</b> '+s[3]+'</p><hr><p><b>Notas:</b> '+s[4]+'</p></section>
 <section id="library53" class="tab-panel" style="display:none">
   <div class="card">
     <h2>📚 Biblioteca Ministerial</h2>
@@ -11060,81 +9433,6 @@ function printSlides(){
     <div id="libList53" style="margin-top:12px"></div>
   </div>
 </section>
-
-<script>
-const LIB_KEY_53="EBP_LIBRARY_153";
-function libDefaults53(){
- return [
-  {id:"demo1",title:"De lejos a la presencia de Dios",type:"Estudio bíblico",refs:"Efesios 2:11–22",tags:["reconciliación","iglesia","Cristo"],summary:"Estudio sobre la reconciliación, el acceso al Padre y la identidad del pueblo de Dios.",favorite:true,updated:Date.now()},
-  {id:"demo2",title:"Salvos por gracia, creados para buenas obras",type:"Sermón",refs:"Efesios 2:8–10",tags:["gracia","salvación","obediencia"],summary:"Relación entre gracia, fe, salvación y buenas obras.",favorite:false,updated:Date.now()-1000},
-  {id:"demo3",title:"Cristo es nuestra paz",type:"Clase",refs:"Efesios 2:14–18",tags:["paz","reconciliación","Pneumatología"],summary:"Cristo como nuestra paz y el acceso al Padre en un mismo Espíritu.",favorite:false,updated:Date.now()-2000}
- ];
-}
-function getLib53(){
- try{
-  const x=JSON.parse(localStorage.getItem(LIB_KEY_53)||"null");
-  if(Array.isArray(x)) return x;
- }catch(e){}
- const d=libDefaults53(); localStorage.setItem(LIB_KEY_53,JSON.stringify(d)); return d;
-}
-function setLib53(x){localStorage.setItem(LIB_KEY_53,JSON.stringify(x));}
-function refreshTags53(){
- const data=getLib53(), tags=[...new Set(data.flatMap(x=>x.tags||[]))].sort();
- const sel=document.getElementById('libTag53'), cur=sel.value;
- sel.innerHTML='<option value="all">Todas las etiquetas</option>'+tags.map(t=>'<option>'+t+'</option>').join('');
- if(tags.includes(cur)) sel.value=cur;
-}
-function renderLib53(){
- refreshTags53();
- const q=(document.getElementById('libSearch53').value||"").toLowerCase().trim();
- const type=document.getElementById('libType53').value;
- const tag=document.getElementById('libTag53').value;
- const sort=document.getElementById('libSort53').value;
- let data=getLib53().filter(x=>{
-  const hay=[x.title,x.type,x.refs,x.summary,(x.tags||[]).join(" ")].join(" ").toLowerCase();
-  return (!q||hay.includes(q))&&(type==="all"||x.type===type)&&(tag==="all"||(x.tags||[]).includes(tag));
- });
- if(sort==="title") data.sort((a,b)=>a.title.localeCompare(b.title));
- else if(sort==="favorite") data.sort((a,b)=>Number(b.favorite)-Number(a.favorite)||b.updated-a.updated);
- else data.sort((a,b)=>b.updated-a.updated);
-
- const all=getLib53(), fav=all.filter(x=>x.favorite).length;
- document.getElementById('libStats53').innerHTML=
-  '<div class="card"><strong>Recursos:</strong> '+all.length+' · <strong>Favoritos:</strong> '+fav+' · <strong>Mostrados:</strong> '+data.length+'</div>';
-
- document.getElementById('libList53').innerHTML=data.length?data.map(x=>
-  '<div class="card" style="margin-bottom:10px">'+
-   '<div style="display:flex;justify-content:space-between;gap:8px"><h3 style="margin:0">'+(x.favorite?"⭐ ":"")+x.title+'</h3>'+
-   '<button onclick="toggleFav53(\''+x.id+'\')">'+(x.favorite?"☆ Quitar favorito":"⭐ Favorito")+'</button></div>'+
-   '<p><strong>'+x.type+'</strong> · '+x.refs+'</p>'+
-   '<p>'+x.summary+'</p>'+
-   '<p>'+((x.tags||[]).map(t=>'<span style="display:inline-block;padding:3px 7px;border:1px solid #ccc;border-radius:10px;margin:2px">'+t+'</span>').join(" "))+'</p>'+
-   '<button onclick="deleteLib53(\''+x.id+'\')">🗑️ Eliminar</button>'+
-  '</div>'
- ).join(''):'<div class="card"><p>No hay recursos que coincidan con los filtros.</p></div>';
-}
-function addLib53(){
- const title=document.getElementById('libTitle53').value.trim();
- if(!title){alert("Escribe un título.");return;}
- const tags=document.getElementById('libTags53').value.split(',').map(x=>x.trim()).filter(Boolean);
- const data=getLib53();
- data.push({id:"r_"+Date.now(),title,type:document.getElementById('libNewType53').value,refs:document.getElementById('libRefs53').value.trim(),tags,summary:document.getElementById('libSummary53').value.trim(),favorite:false,updated:Date.now()});
- setLib53(data);
- document.getElementById('libTitle53').value="";
- document.getElementById('libRefs53').value="";
- document.getElementById('libTags53').value="";
- document.getElementById('libSummary53').value="";
- renderLib53();
-}
-function toggleFav53(id){
- const data=getLib53(); const x=data.find(a=>a.id===id); if(x){x.favorite=!x.favorite;x.updated=Date.now();setLib53(data);renderLib53();}
-}
-function deleteLib53(id){
- if(!confirm("¿Eliminar este recurso de la biblioteca local?"))return;
- setLib53(getLib53().filter(x=>x.id!==id));renderLib53();
-}
-document.addEventListener('DOMContentLoaded',renderLib53);
-</script>
 
 </body></html>');
  w.document.close();w.focus();setTimeout(()=>w.print(),300);
@@ -11299,7 +9597,7 @@ document.addEventListener('DOMContentLoaded',renderLib53);
 <section class="panel" id="library159" style="margin-top:18px;">
   <div class="panel-head">
     <div>
-      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.60</div>
+      <div class="eyebrow">BIBLIOTECA MINISTERIAL · 1.61</div>
       <h2>📚 Biblioteca Ministerial</h2>
       <p class="muted">Unifica estudios, sermones, clases, discipulado e investigación en una biblioteca local con búsqueda, favoritos y copias de seguridad.</p>
     </div>
@@ -11330,7 +9628,7 @@ document.addEventListener('DOMContentLoaded',renderLib53);
         <input id="lib159Import" type="file" accept=".json,application/json" style="display:none" onchange="importLibrary159(event)">
       </div>
       <div class="lib159-full" style="margin-top:12px;border-top:1px solid #d9e1e8;padding-top:12px">
-        <div class="callout"><b>🛡️ Respaldo completo 1.60:</b> guarda una copia de los datos locales de toda la aplicación en un único archivo JSON. Esto protege estudios, notas, biblioteca, exégesis y demás información almacenada en este navegador.</div>
+        <div class="callout"><b>🛡️ Respaldo completo 1.61:</b> guarda una copia de los datos locales de toda la aplicación en un único archivo JSON. Esto protege estudios, notas, biblioteca, exégesis y demás información almacenada en este navegador.</div>
         <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px">
           <button class="btn primary" onclick="backupApp160()">💾 Respaldar toda la aplicación</button>
           <button class="btn" onclick="document.getElementById('app160Import').click()">♻️ Restaurar respaldo completo</button>
@@ -11442,7 +9740,7 @@ function toggleD161Complete(){const i=d161State.selected,p=d161State.done.indexO
 function exportD161(){const payload={schema:"estudio-biblico-pro-discipulado",version:"1.61",exportedAt:new Date().toISOString(),lessons:D161_LESSONS,state:d161State};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="Estudio_Biblico_Pro_Discipulado_16_Lecciones_1.61.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);document.getElementById("d161Status").textContent="✓ Ruta de discipulado exportada."}
 document.addEventListener("DOMContentLoaded",()=>{loadD161();setTimeout(renderD161,260)});
 
-/* RESPALDO COMPLETO — Estudio Bíblico Pro 1.60 */
+/* RESPALDO COMPLETO — Estudio Bíblico Pro 1.61 */
 const APP_BACKUP_VERSION_160="1.61";
 function collectAppBackup160(){
   const storage={};
